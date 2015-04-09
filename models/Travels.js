@@ -1,10 +1,12 @@
 var mongoose = require('mongoose');
 
-var PostSchema = new mongoose.Schema({
+var TravelSchema = new mongoose.Schema({
   title: String,
   link: String,
   author: String,
-  created_at: { type: Date },
+  created_at: { type: Date, default: new Date()},
+  startDate: { type: Date},
+  endDate: { type: Date},
   upvotes: {
     type: Number,
     default: 0
@@ -15,9 +17,9 @@ var PostSchema = new mongoose.Schema({
   }]
 });
 
-PostSchema.methods.upvote = function(cb) {
+TravelSchema.methods.upvote = function(cb) {
   this.upvotes += 1;
   this.save(cb);
 };
 
-mongoose.model('Post', PostSchema);
+mongoose.model('Travel', TravelSchema);

@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Flapper News</title>
+    <title>Vacaciones permanentes</title>
     <link href="/bower/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="/bower/angular/angular.js"></script>
     <script src="/bower/angular-ui-router/release/angular-ui-router.js"></script>
@@ -10,96 +10,115 @@
     <style> .glyphicon-thumbs-up { cursor:pointer } </style>
   </head>
   <!-- rest of template -->
-  <body ng-app="flapperNews" ng-controller="MainCtrl">
-    <nav class="navbar navbar-default pull-right" ng-controller="NavCtrl">
-      <ul class="nav navbar-nav">
-        <li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
-        <li ng-show="isLoggedIn()"><a href="" ng-click="logOut()">Log Out</a></li>
-        <li ng-hide="isLoggedIn()"><a href="/#/login">Log In</a></li>
-        <li ng-hide="isLoggedIn()"><a href="/#/register">Register</a></li>
-      </ul>
-    </nav>
-    <div class="row">
-      <div class="col-md-6 col-md-offset-3">
-        <ui-view></ui-view>
+  <body ng-app="flapperNews" ng-controller="MainCtrl" class="container">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Vacaciones permanentes</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="/">Home</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right" ng-controller="NavCtrl">
+            <li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
+            <li ng-show="isLoggedIn()"><a href="" ng-click="logOut()">Log Out</a></li>
+            <li ng-hide="isLoggedIn()"><a href="/#/login">Log In</a></li>
+            <li ng-hide="isLoggedIn()"><a href="/#/register">Registrar</a></li>
+          </ul>
+        </div>
+        <!--/.nav-collapse -->
       </div>
+      <!--/.container-fluid -->
+    </nav>
+    <div>
+      <ui-view></ui-view>
     </div>
-    <script type="text/ng-template" id="/home.html">
-      <div class="page-header">
-        <div class="page-header">
-          <h1>Flapper News</h1>
-          </div>
-      <table class="table">
+    <script type="text/ng-template" id="/travels.html">
+      <div class="page-header" >
+        <div class="page-header" ng-show="isLoggedIn()" >
+          <h1>Mis viajes</h1>
+        </div>
+      <table class="table" ng-show="isLoggedIn()" >
           <tr>
-      <th>Like</th>
-      <th><a href="" ng-click="order('title')">Post</a></th>
-      <th><a href="" ng-click="order('author')">Author</a></th>
-      <th><a href="" ng-click="order('comments.length')">Comments</a></th>
-      <th><a href="" ng-click="order('created_at')">Date</a></th>
+      <th><a href="" ng-click="order('title')">Nombre</a></th>
+      <th><a href="" ng-click="order('startDate')">Fecha inicio</a></th>
+      <th><a href="" ng-click="order('endDate')">Fecha fin</a></th>
+      <th><a href="" ng-click="order('created_at')">Fecha de creación</a></th>
+      <th>Acciones</th>
       </tr>
-          <tr  ng-repeat="post in posts | orderBy : predicate : reverse">
-            <td class="glyphicon glyphicon-thumbs-up"
-              ng-click="incrementUpvotes(post)"> {{post.upvotes}} 
-      </td>
+          <tr  ng-repeat="travel in travels | orderBy : predicate : reverse">
+            
             <td style="font-size:20px; margin-left:10px;">
-              <a ng-show="post.link" href="{{post.link}}">
-                {{post.title}}
+              <a ng-show="travel.link" href="{{travel.link}}">
+                {{travel.title}}
               </a>
-              <span ng-hide="post.link">
-                {{post.title}}
+              <span ng-hide="travel.link">
+                {{travel.title}}
               </span>
-            </td>
-            <td >
-               posted by <a>{{post.author}}</a>
+              {{travel.author}}
             </td>
             <td>
-              <a href="#/posts/{{post._id}}">({{post.comments.length}}) Comments</a>
+              {{travel.startDate | amDateFormat:'D/MM/YYYY'}}
             </td>
-            <td am-time-ago="post.created_at">
+            <td>
+              {{travel.endDate | amDateFormat:'D/MM/YYYY'}}
+            </td>
+            <td am-time-ago="travel.created_at">
+            </td>
+            <td>
+              <button type="button" class="btn btn-default btn-lg">
+                Detalle
+              </button>
+              <button type="button" class="btn btn-danger btn-lg">
+                Eliminar
+              </button>
             </td>
           </tr>
       </table>
       
-          <form ng-submit="addPost()"
+          <form ng-submit="addTravel()"
       ng-show="isLoggedIn()" 
             style="margin-top:30px;">
-            <h3>Add a new post</h3>
+            <h3>Agregar un nuevo viaje</h3>
       
-            <div class="form-group">
+            <div class="form-group input-group">
+              <span class="input-group-addon" id="basic-addon1">Nombre</span>
               <input type="text"
                 class="form-control"
-                placeholder="Title"
+                placeholder="nombre"
                 ng-model="title"></input>
             </div>
-            <div class="form-group">
-              <input type="text"
+            <div class="form-group input-group">
+              <span class="input-group-addon" id="basic-addon1">fecha inicio</span>
+              <input type="date"
               class="form-control"
-              placeholder="Link"
-              ng-model="link"></input>
+              placeholder="fecha inicio"
+              ng-model="startDate"></input>
             </div>
-            <button type="submit" class="btn btn-primary">Post</button>
+            <div class="form-group input-group">
+              <span class="input-group-addon" id="basic-addon1">Fecha fin</span>
+              <input type="date"
+              class="form-control"
+              placeholder="fecha fin"
+              ng-model="endDate"></input>
+            </div>
+            <button type="submit" class="btn btn-primary">Crear</button>
           </form>
           <div ng-hide="isLoggedIn()">
-             <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can add a post.</h3>
+             <h3>Usted necesita <a href="/#/login">iniciar sesión</a> o <a href="/#/register">registrarse</a> para ver los viajes o crear uno nuevo.</h3>
           </div>
       </div>
     </script>
-    <script type="text/ng-template" id="/posts.html">
+    <script type="text/ng-template" id="/travel.html">
       <div class="page-header">
         <h3>
-          <a ng-show="post.link" href="{{post.link}}">
-            {{post.title}}
-          </a>
-          <span ng-hide="post.link">
-            {{post.title}}
-          </span>
-          <span style="font-size:15px;" am-time-ago="post.created_at">
-           
+          <span style="font-size:15px;" am-time-ago="travel.created_at">
           </span>
         </h3>
       </div>
       
-      <div ng-repeat="comment in post.comments | orderBy:'-upvotes'">
+      <div ng-repeat="comment in travel.comments | orderBy:'-upvotes'">
         <span class="glyphicon glyphicon-thumbs-up"
           ng-click="incrementUpvotes(comment)"></span>
         {{comment.upvotes}} - by {{comment.author}}
@@ -121,25 +140,21 @@
           placeholder="Comment"
           ng-model="body"></input>
         </div>
-        <button type="submit" class="btn btn-primary">Post</button>
+        <button type="submit" class="btn btn-primary">Travel</button>
       </form>
       <div ng-hide="isLoggedIn()">
-        <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can comment.</h3>
+        <h3>Usted necesita <a href="/#/login">iniciar sesión</a> o <a href="/#/register"> registrarse</a> para agergar un comentario.</h3>
       </div>
-      <a type="submit" href="/#/home" class="btn btn-default">Back</a>
+      <a type="submit" href="/#/travels" class="btn btn-default">Back</a>
     </script>
     <script type="text/ng-template" id="/register.html">
-      <div class="page-header">
-        <h1>Flapper News</h1>
-      </div>
-      
       <div ng-show="error" class="alert alert-danger row">
         <span>{{ error.message }}</span>
       </div>
       
       <form ng-submit="register()"
         style="margin-top:30px;">
-        <h3>Register</h3>
+        <h3>Registro</h3>
       
         <div class="form-group">
           <input type="text"
@@ -153,14 +168,10 @@
           placeholder="Password"
           ng-model="user.password"></input>
         </div>
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit" class="btn btn-primary">Registrar</button>
       </form>
     </script>
     <script type="text/ng-template" id="/login.html">
-      <div class="page-header">
-        <h1>Flapper News</h1>
-      </div>
-      
       <div ng-show="error" class="alert alert-danger row">
         <span>{{ error.message }}</span>
       </div>
@@ -183,6 +194,14 @@
         </div>
         <button type="submit" class="btn btn-primary">Log In</button>
       </form>
+    </script>
+    <script type="text/ng-template" id="/home.html">
+      <div>
+        <h1>Bienvenido a Vacaciones permanentes</h1>
+      
+        <h3>Usted necesita <a href="/#/login">iniciar sesión</a> o <a href="/#/register"> registrarse</a> para poder usar el sistema.</h3>
+      
+      </div>
     </script>
   </body>
 </html>

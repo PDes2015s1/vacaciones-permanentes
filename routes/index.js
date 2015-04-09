@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-var Post = mongoose.model('Post');
+var Travel = mongoose.model('Travel');
 var Comment = mongoose.model('Comment');
 var User = mongoose.model('User');
 var passport = require('passport');
@@ -19,50 +19,49 @@ router.get('/', function(req, res, next) {
   });
 });
 
-router.get('/posts', function(req, res, next) {
-  Post.find(function(err, posts) {
+router.get('/travels', auth, function(req, res, next) {
+  Travel.find({'author':req.payload.username},function(err, travels) {
     if (err) {
       return next(err);
     }
 
-    res.json(posts);
+    res.json(travels);
   });
 });
 
-router.post('/posts', auth, function(req, res, next) {
-  req.body.created_at = new Date();
-  var post = new Post(req.body);
-  post.author = req.payload.username;
-  post.save(function(err, post) {
+router.post('/travels', auth, function(req, res, next) {
+  var travel = new Travel(req.body);
+  travel.author = req.payload.username;
+  travel.save(function(err, travel) {
     if (err) {
       return next(err);
     }
 
-    res.json(post);
+    res.json(travel);
   });
 });
 
-router.get('/posts/:post', function(req, res, next) {
-  req.post.populate('comments', function(err, post) {
+router.get('/travels/:travel', function(req, res, next) {
+  req.travel.populate('comments', function(err, travel) {
     if (err) {
       return next(err);
     }
 
-    res.json(post);
+    res.json(travel);
   });
 });
 
-router.put('/posts/:post/upvote', auth, function(req, res, next) {
-  req.post.upvote(function(err, post) {
+router.put('/travels/:travel/upvote', auth, function(req, res, next) {
+  req.travel.upvote(function(err, travel) {
     if (err) {
       return next(err);
     }
 
-    res.json(post);
+    res.json(travel);
   });
 });
 
-router.put('/posts/:post/comments/:comment/upvote', auth, function(req, res, next) {
+router.put('/travels/:travel/comments/:comment/upvote', auth, function(req, res, next) {
   req.comment.upvote(function(err, comment) {
     if (err) {
       return next(err);
@@ -72,10 +71,10 @@ router.put('/posts/:post/comments/:comment/upvote', auth, function(req, res, nex
   });
 });
 
-router.post('/posts/:post/comments', auth, function(req, res, next) {
+router.post('/travels/:travel/comments', auth, function(req, res, next) {
   req.body.created_at = new Date();
   var comment = new Comment(req.body);
-  comment.post = req.post;
+  comment.travel = req.travel;
   comment.author = req.payload.username;
 
   comment.save(function(err, comment) {
@@ -83,8 +82,8 @@ router.post('/posts/:post/comments', auth, function(req, res, next) {
       return next(err);
     }
 
-    req.post.comments.push(comment);
-    req.post.save(function(err, post) {
+    req.travel.comments.push(comment);
+    req.travel.save(function(err, travel) {
       if (err) {
         return next(err);
       }
@@ -140,18 +139,18 @@ router.post('/login', function(req, res, next) {
   })(req, res, next);
 });
 
-router.param('post', function(req, res, next, id) {
-  var query = Post.findById(id);
+router.param('travel', function(req, res, next, id) {
+  var query = Travel.findById(id);
 
-  query.exec(function(err, post) {
+  query.exec(function(err, travel) {
     if (err) {
       return next(err);
     }
-    if (!post) {
-      return next(new Error('can\'t find post'));
+    if (!travel) {
+      return next(new Error('can\'t find travel'));
     }
 
-    req.post = post;
+    req.travel = travel;
     return next();
   });
 });

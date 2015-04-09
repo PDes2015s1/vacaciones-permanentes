@@ -6,24 +6,24 @@ app.config([
   function($stateProvider, $urlRouterProvider) {
 
     $stateProvider
-      .state('home', {
-        url: '/home',
-        templateUrl: '/home.html',
+      .state('travels', {
+        url: '/travels',
+        templateUrl: '/travels.html',
         controller: 'MainCtrl',
         resolve: {
-          postPromise: ['posts', function(posts) {
-            return posts.getAll();
+          postPromise: ['travels', function(travels) {
+            return travels.getAll();
           }]
         }
       });
     $stateProvider
-      .state('posts', {
-        url: '/posts/{id}',
-        templateUrl: '/posts.html',
-        controller: 'PostsCtrl',
+      .state('travel', {
+        url: '/travel/{id}',
+        templateUrl: '/travel.html',
+        controller: 'TravelCtrl',
         resolve: {
-          post: ['$stateParams', 'posts', function($stateParams, posts) {
-            return posts.get($stateParams.id);
+          travel: ['$stateParams', 'travels', function($stateParams, travels) {
+            return travels.get($stateParams.id);
           }]
         }
       })
@@ -33,7 +33,15 @@ app.config([
         controller: 'AuthCtrl',
         onEnter: ['$state', 'auth', function($state, auth) {
           if (auth.isLoggedIn()) {
-            $state.go('home');
+            $state.go('travels');
+          }
+        }]
+      }).state('home', {
+        url: '/home',
+        templateUrl: '/home.html',
+        onEnter: ['$state', 'auth', function($state, auth) {
+          if (auth.isLoggedIn()) {
+            $state.go('travels');
           }
         }]
       })
@@ -43,7 +51,7 @@ app.config([
         controller: 'AuthCtrl',
         onEnter: ['$state', 'auth', function($state, auth) {
           if (auth.isLoggedIn()) {
-            $state.go('home');
+            $state.go('travels');
           }
         }]
       });
@@ -105,46 +113,50 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
   return auth;
 }])
 
-app.factory('posts', ['$http', 'auth', function($http, auth) {
+app.factory('travels', ['$http', 'auth', function($http, auth) {
   var o = {
-    posts: [],
+    travels: [],
     getAll: function() {
-      return $http.get('/posts').success(function(data) {
-        angular.copy(data, o.posts);
+      return $http.get('/travels', {
+        headers: {
+          Authorization: 'Bearer ' + auth.getToken()
+        }
+      }).success(function(data) {
+        angular.copy(data, o.travels);
       })
     },
-    create: function(post) {
-      return $http.post('/posts', post, {
+    create: function(travel) {
+      return $http.post('/travels', travel, {
         headers: {
           Authorization: 'Bearer ' + auth.getToken()
         }
       }).success(function(data) {
-        o.posts.push(data);
+        o.travels.push(data);
       });
     },
-    upvote: function(post) {
-      return $http.put('/posts/' + post._id + '/upvote', null, {
+    upvote: function(travel) {
+      return $http.put('/travels/' + travel._id + '/upvote', null, {
         headers: {
           Authorization: 'Bearer ' + auth.getToken()
         }
       }).success(function(data) {
-        post.upvotes += 1;
+        travel.upvotes += 1;
       });
     },
     get: function(id) {
-      return $http.get('/posts/' + id).then(function(res) {
+      return $http.get('/travels/' + id).then(function(res) {
         return res.data;
       });
     },
     addComment: function(id, comment) {
-      return $http.post('/posts/' + id + '/comments', comment, {
+      return $http.post('/travels/' + id + '/comments', comment, {
         headers: {
           Authorization: 'Bearer ' + auth.getToken()
         }
       });
     },
-    upvoteComment: function(post, comment) {
-      return $http.put('/posts/' + post._id + '/comments/' + comment._id + '/upvote', null, {
+    upvoteComment: function(travel, comment) {
+      return $http.put('/travels/' + travel._id + '/comments/' + comment._id + '/upvote', null, {
         headers: {
           Authorization: 'Bearer ' + auth.getToken()
         }
@@ -157,21 +169,23 @@ app.factory('posts', ['$http', 'auth', function($http, auth) {
 }]);
 
 app.controller('MainCtrl', [
-  '$scope', 'posts', 'auth', '$filter',
-  function($scope, posts, auth, $filter) {
+  '$scope', 'travels', 'auth', '$filter',
+  function($scope, travels, auth, $filter) {
     $scope.test = 'Hello world!';
     var orderBy = $filter('orderBy');
     $scope.reverse = true;
-    $scope.posts = posts.posts;
+    $scope.travels = travels.travels;
     $scope.isLoggedIn = auth.isLoggedIn;
 
-    $scope.addPost = function() {
+    $scope.addTravel = function() {
       if (!$scope.title || $scope.title === '') {
         return;
       }
-      posts.create({
+      travels.create({
         title: $scope.title,
         link: $scope.link,
+        startDate: $scope.startDate,
+        endDate: $scope.endDate
       });
       $scope.title = '';
       $scope.link = '';
@@ -183,36 +197,36 @@ app.controller('MainCtrl', [
     };
     $scope.order('title');
 
-    $scope.incrementUpvotes = function(post) {
-      posts.upvote(post);
+    $scope.incrementUpvotes = function(travel) {
+      travels.upvote(travel);
     };
 
   }
 ]);
 
-app.controller('PostsCtrl', [
+app.controller('TravelCtrl', [
   '$scope',
-  'posts',
-  'post',
+  'travels',
+  'travel',
   'auth',
-  function($scope, posts, post, auth) {
-    $scope.post = post;
+  function($scope, travels, travel, auth) {
+    $scope.travels = travel;
     $scope.isLoggedIn = auth.isLoggedIn;
     $scope.addComment = function() {
       if ($scope.body === '') {
         return;
       }
-      posts.addComment(post._id, {
+      travels.addComment(travel._id, {
         body: $scope.body,
         author: 'user',
       }).success(function(comment) {
-        $scope.post.comments.push(comment);
+        $scope.travel.comments.push(comment);
       });
       $scope.body = '';
     };
 
     $scope.incrementUpvotes = function(comment) {
-      posts.upvoteComment(post, comment);
+      travels.upvoteComment(travel, comment);
     };
   }
 ]);
@@ -228,7 +242,7 @@ app.controller('AuthCtrl', [
       auth.register($scope.user).error(function(error) {
         $scope.error = error;
       }).then(function() {
-        $state.go('home');
+        $state.go('travels');
       });
     };
 
@@ -236,7 +250,7 @@ app.controller('AuthCtrl', [
       auth.logIn($scope.user).error(function(error) {
         $scope.error = error;
       }).then(function() {
-        $state.go('home');
+        $state.go('travels');
       });
     };
   }
