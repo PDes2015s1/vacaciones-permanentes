@@ -1,0 +1,12 @@
+{
+  "name": "flapper-news",
+  "description": "A starter project for AngularJS",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "angular": "1.2.x",
+    "bootstrap": "3.0.3",
+    "angular-moment": "~0.9.2",
+    "angular-ui-router": "~0.2.13"
+  }
+}
