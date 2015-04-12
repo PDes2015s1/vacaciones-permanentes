@@ -20,7 +20,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/travels', auth, function(req, res, next) {
-  Travel.find({'author':req.payload.username},function(err, travels) {
+  Travel.find({'user':req.payload._id},function(err, travels) {
     if (err) {
       return next(err);
     }
@@ -31,7 +31,7 @@ router.get('/travels', auth, function(req, res, next) {
 
 router.post('/travels', auth, function(req, res, next) {
   var travel = new Travel(req.body);
-  travel.author = req.payload.username;
+  travel.user = req.payload._id;
   travel.save(function(err, travel) {
     if (err) {
       return next(err);
