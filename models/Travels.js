@@ -7,13 +7,9 @@ var TravelSchema = new mongoose.Schema({
   created_at: { type: Date, default: new Date()},
   startDate: { type: Date},
   endDate: { type: Date},
-  upvotes: {
-    type: Number,
-    default: 0
-  },
-  comments: [{
+  destinations: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Comment'
+    ref: 'Destination'
   }]
 });
 

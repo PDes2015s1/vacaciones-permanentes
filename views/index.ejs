@@ -14,11 +14,11 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">Vacaciones permanentes</a>
+          <a class="navbar-brand" href="#/home">Vacaciones permanentes</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="/">Home</a></li>
+            <li class="active"><a href="#/home">Home</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right" ng-controller="NavCtrl">
             <li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
@@ -66,9 +66,9 @@
             <td am-time-ago="travel.created_at">
             </td>
             <td>
-              <button type="button" class="btn btn-default btn-lg">
+              <a href="#/travel/{{travel._id}}" class="btn btn-default btn-lg">
                 Detalle
-              </button>
+              </a>
               <button type="button" class="btn btn-danger btn-lg">
                 Eliminar
               </button>
@@ -112,34 +112,42 @@
     <script type="text/ng-template" id="/travel.html">
       <div class="page-header">
         <h3>
-          <span style="font-size:15px;" am-time-ago="travel.created_at">
+          {{travel.title}}
+          <span style="font-size:15px;" class="pull-right" am-time-ago="travel.created_at">
           </span>
         </h3>
       </div>
-      
-      <div ng-repeat="comment in travel.comments | orderBy:'-upvotes'">
-        <span class="glyphicon glyphicon-thumbs-up"
-          ng-click="incrementUpvotes(comment)"></span>
-        {{comment.upvotes}} - by {{comment.author}}
+	   <table class="table table-bordered table-striped" >
+          <tr>
+           <td><b>Fecha de inicio<b></td>
+           <td>{{travel.startDate | amDateFormat:'D/MM/YYYY'}}</td>
+          </tr>
+          <tr>
+           <td><b>Fecha fin<b></td>
+           <td>{{travel.endDate | amDateFormat:'D/MM/YYYY'}}</td>
+          </tr>
+       </table>
+      <div ng-repeat="destination in travel.destinations" >
+        Destino 
         <span style="font-size:20px; margin-left:10px;">
-          {{comment.body}}
+          {{destination.body}}
         </span>
-        <span style="font-size:15px; margin-left:10px;" am-time-ago="comment.created_at">
+        <span style="font-size:15px; margin-left:10px;" am-time-ago="destination.created_at">
         </span>
       </div>
       
-      <form ng-submit="addComment()"
+      <form ng-submit="addDestination()"
       ng-show="isLoggedIn()"
         style="margin-top:30px;">
-        <h3>Add a new comment</h3>
+        <h3>Agregar un nuevo destino</h3>
       
         <div class="form-group">
           <input type="text"
           class="form-control"
-          placeholder="Comment"
+          placeholder="Destino"
           ng-model="body"></input>
         </div>
-        <button type="submit" class="btn btn-primary">Travel</button>
+        <button type="submit" class="btn btn-primary">Crear</button>
       </form>
       <div ng-hide="isLoggedIn()">
         <h3>Usted necesita <a href="/#/login">iniciar sesión</a> o <a href="/#/register"> registrarse</a> para agergar un comentario.</h3>

@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var Travel = mongoose.model('Travel');
-var Comment = mongoose.model('Comment');
+var Destination = mongoose.model('Destination');
 var User = mongoose.model('User');
 var passport = require('passport');
 var jwt = require('express-jwt');
@@ -42,7 +42,7 @@ router.post('/travels', auth, function(req, res, next) {
 });
 
 router.get('/travels/:travel', function(req, res, next) {
-  req.travel.populate('comments', function(err, travel) {
+  req.travel.populate('destinations', function(err, travel) {
     if (err) {
       return next(err);
     }
@@ -51,44 +51,22 @@ router.get('/travels/:travel', function(req, res, next) {
   });
 });
 
-router.put('/travels/:travel/upvote', auth, function(req, res, next) {
-  req.travel.upvote(function(err, travel) {
+router.post('/travels/:travel/destinations', auth, function(req, res, next) {
+  var destination = new Destination(req.body);
+  destination.travel = req.travel;
+
+  destination.save(function(err, destination) {
     if (err) {
       return next(err);
     }
 
-    res.json(travel);
-  });
-});
-
-router.put('/travels/:travel/comments/:comment/upvote', auth, function(req, res, next) {
-  req.comment.upvote(function(err, comment) {
-    if (err) {
-      return next(err);
-    }
-
-    res.json(comment);
-  });
-});
-
-router.post('/travels/:travel/comments', auth, function(req, res, next) {
-  req.body.created_at = new Date();
-  var comment = new Comment(req.body);
-  comment.travel = req.travel;
-  comment.author = req.payload.username;
-
-  comment.save(function(err, comment) {
-    if (err) {
-      return next(err);
-    }
-
-    req.travel.comments.push(comment);
+    req.travel.destinations.push(destination);
     req.travel.save(function(err, travel) {
       if (err) {
         return next(err);
       }
 
-      res.json(comment);
+      res.json(destination);
     });
   });
 });
@@ -155,18 +133,18 @@ router.param('travel', function(req, res, next, id) {
   });
 });
 
-router.param('comment', function(req, res, next, id) {
-  var query = Comment.findById(id);
+router.param('destination', function(req, res, next, id) {
+  var query = destination.findById(id);
 
-  query.exec(function(err, comment) {
+  query.exec(function(err, destination) {
     if (err) {
       return next(err);
     }
-    if (!comment) {
-      return next(new Error('can\'t find comment'));
+    if (!destination) {
+      return next(new Error('can\'t find destination'));
     }
 
-    req.comment = comment;
+    req.destination = destination;
     return next();
   });
 });

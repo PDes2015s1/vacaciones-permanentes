@@ -134,34 +134,16 @@ app.factory('travels', ['$http', 'auth', function($http, auth) {
         o.travels.push(data);
       });
     },
-    upvote: function(travel) {
-      return $http.put('/travels/' + travel._id + '/upvote', null, {
-        headers: {
-          Authorization: 'Bearer ' + auth.getToken()
-        }
-      }).success(function(data) {
-        travel.upvotes += 1;
-      });
-    },
     get: function(id) {
       return $http.get('/travels/' + id).then(function(res) {
         return res.data;
       });
     },
-    addComment: function(id, comment) {
-      return $http.post('/travels/' + id + '/comments', comment, {
+    addDestination: function(id, destination) {
+      return $http.post('/travels/' + id + '/destinations', destination, {
         headers: {
           Authorization: 'Bearer ' + auth.getToken()
         }
-      });
-    },
-    upvoteComment: function(travel, comment) {
-      return $http.put('/travels/' + travel._id + '/comments/' + comment._id + '/upvote', null, {
-        headers: {
-          Authorization: 'Bearer ' + auth.getToken()
-        }
-      }).success(function(data) {
-        comment.upvotes += 1;
       });
     }
   };
@@ -197,10 +179,6 @@ app.controller('MainCtrl', [
     };
     $scope.order('title');
 
-    $scope.incrementUpvotes = function(travel) {
-      travels.upvote(travel);
-    };
-
   }
 ]);
 
@@ -210,24 +188,20 @@ app.controller('TravelCtrl', [
   'travel',
   'auth',
   function($scope, travels, travel, auth) {
-    $scope.travels = travel;
+    $scope.travel = travel;
     $scope.isLoggedIn = auth.isLoggedIn;
-    $scope.addComment = function() {
+    $scope.addDestination = function() {
       if ($scope.body === '') {
         return;
       }
-      travels.addComment(travel._id, {
-        body: $scope.body,
-        author: 'user',
-      }).success(function(comment) {
-        $scope.travel.comments.push(comment);
+      travels.addDestination(travel._id, {
+        body: $scope.body
+      }).success(function(destination) {
+        $scope.travel.destinations.push(destination);
       });
       $scope.body = '';
     };
 
-    $scope.incrementUpvotes = function(comment) {
-      travels.upvoteComment(travel, comment);
-    };
   }
 ]);
 
