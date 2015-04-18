@@ -134,12 +134,17 @@ app.factory('travels', ['$http', 'auth', function($http, auth) {
         o.travels.push(data);
       });
     },
-    remove: function(travelId) {
-        for (var i = 0; i < o.travels.length; i++) {
-            if (o.travels[i]._id === travelId) {
-                o.travels.splice(i, 1);
-            }
+    remove: function(travel) {
+      return $http.put('/travels/' + travel._id, {
+        headers: {
+          Authorization: 'Bearer ' + auth.getToken()
         }
+      }).success(function(data) {
+        for (i = 0; i < o.travels.length; i++) {
+          if (o.travels[i]._id == travel._id)
+            o.travels.splice(i, 1);
+        }
+      });
     },
     get: function(id) {
       return $http.get('/travels/' + id).then(function(res) {
@@ -165,32 +170,40 @@ app.controller('MainCtrl', [
     $scope.reverse = true;
     $scope.travels = travels.travels;
     $scope.isLoggedIn = auth.isLoggedIn;
+    $scope.travelToRemove;
+
+    $scope.setTravelToRemove = function(travel) {
+      $scope.travelToRemove = travel;
+    }
 
     $scope.addTravel = function() {
-      if (!$scope.title || $scope.title === '') {
+      if ($scope.isInvalidTravel()) {
         return;
       }
       travels.create({
         title: $scope.title,
-        link: $scope.link,
         startDate: $scope.startDate,
         endDate: $scope.endDate
       });
       $scope.title = '';
       $scope.link = '';
     };
-    
-    $scope.remove = function(id) {
-        travels.remove(id);
+
+    $scope.isInvalidTravel = function() {
+      return !$scope.title || $scope.title === '' || !$scope.startDate || $scope.startDate === '' || !$scope.endDate || $scope.endDate === '';
+    }
+
+    $scope.removeTravel = function() {
+      travels.remove($scope.travelToRemove);
     };
-    
+
     $scope.order = function(predicate) {
       $scope.reverse = !$scope.reverse;
       $scope.predicate = predicate;
     };
-    $scope.order('title');
+    //$scope.order('title');
 
-  } 
+  }
 ]);
 
 app.controller('TravelCtrl', [
