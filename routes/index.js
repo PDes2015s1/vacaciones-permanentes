@@ -20,7 +20,9 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/travels', auth, function(req, res, next) {
-  Travel.find({'user':req.payload._id},function(err, travels) {
+  Travel.find({
+    'user': req.payload._id
+  }, function(err, travels) {
     if (err) {
       return next(err);
     }
@@ -38,6 +40,13 @@ router.post('/travels', auth, function(req, res, next) {
     }
 
     res.json(travel);
+  });
+});
+
+router.put('/travels/:travel', function(req, res, next) {
+  req.travel.remove(function(err) {
+    if (err) throw err;
+    res.json();
   });
 });
 
