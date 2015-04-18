@@ -134,6 +134,13 @@ app.factory('travels', ['$http', 'auth', function($http, auth) {
         o.travels.push(data);
       });
     },
+    remove: function(travelId) {
+        for (var i = 0; i < o.travels.length; i++) {
+            if (o.travels[i]._id === travelId) {
+                o.travels.splice(i, 1);
+            }
+        }
+    },
     get: function(id) {
       return $http.get('/travels/' + id).then(function(res) {
         return res.data;
@@ -172,14 +179,18 @@ app.controller('MainCtrl', [
       $scope.title = '';
       $scope.link = '';
     };
-
+    
+    $scope.remove = function(id) {
+        travels.remove(id);
+    };
+    
     $scope.order = function(predicate) {
       $scope.reverse = !$scope.reverse;
       $scope.predicate = predicate;
     };
     $scope.order('title');
 
-  }
+  } 
 ]);
 
 app.controller('TravelCtrl', [
