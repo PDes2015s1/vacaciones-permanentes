@@ -1,4 +1,4 @@
-var app = angular.module('flapperNews', ['ui.router', 'angularMoment']);
+var app = angular.module('vacaciones-permanentes', ['ui.router', 'angularMoment']);
 
 app.config([
   '$stateProvider',
@@ -55,7 +55,6 @@ app.config([
           }
         }]
       });
-
 
     $urlRouterProvider.otherwise('home');
   }
@@ -114,32 +113,21 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
 }])
 
 app.factory('travels', ['$http', 'auth', function($http, auth) {
+  var headers = { headers: {Authorization: 'Bearer ' + auth.getToken()} };
   var o = {
     travels: [],
     getAll: function() {
-      return $http.get('/travels', {
-        headers: {
-          Authorization: 'Bearer ' + auth.getToken()
-        }
-      }).success(function(data) {
+      return $http.get('/travels', headers).success(function(data) {
         angular.copy(data, o.travels);
       })
     },
     create: function(travel) {
-      return $http.post('/travels', travel, {
-        headers: {
-          Authorization: 'Bearer ' + auth.getToken()
-        }
-      }).success(function(data) {
+      return $http.post('/travels', travel, headers).success(function(data) {
         o.travels.push(data);
       });
     },
     remove: function(travel) {
-      return $http.put('/travels/' + travel._id, {
-        headers: {
-          Authorization: 'Bearer ' + auth.getToken()
-        }
-      }).success(function(data) {
+      return $http.put('/travels/' + travel._id, headers).success(function(data) {
         for (i = 0; i < o.travels.length; i++) {
           if (o.travels[i]._id == travel._id)
             o.travels.splice(i, 1);
@@ -152,11 +140,7 @@ app.factory('travels', ['$http', 'auth', function($http, auth) {
       });
     },
     addDestination: function(id, destination) {
-      return $http.post('/travels/' + id + '/destinations', destination, {
-        headers: {
-          Authorization: 'Bearer ' + auth.getToken()
-        }
-      });
+      return $http.post('/travels/' + id + '/destinations', destination, headers);
     }
   };
   return o;
@@ -165,7 +149,6 @@ app.factory('travels', ['$http', 'auth', function($http, auth) {
 app.controller('MainCtrl', [
   '$scope', 'travels', 'auth', '$filter',
   function($scope, travels, auth, $filter) {
-    $scope.test = 'Hello world!';
     var orderBy = $filter('orderBy');
     $scope.reverse = true;
     $scope.travels = travels.travels;
@@ -188,9 +171,16 @@ app.controller('MainCtrl', [
       $scope.title = '';
       $scope.link = '';
     };
+    
+    var noValueIn = function() {
+      for (var i = 0; i < arguments.length; i++) {
+        if (!$scope[arguments[i]] || $scope[arguments[i]] === '') return true;
+      }
+      return false;
+  }
 
     $scope.isInvalidTravel = function() {
-      return !$scope.title || $scope.title === '' || !$scope.startDate || $scope.startDate === '' || !$scope.endDate || $scope.endDate === '';
+      return noValueIn('title', 'startDate', 'endDate') || $scope.startDate > $scope.endDate;
     }
 
     $scope.removeTravel = function() {
@@ -201,8 +191,6 @@ app.controller('MainCtrl', [
       $scope.reverse = !$scope.reverse;
       $scope.predicate = predicate;
     };
-    //$scope.order('title');
-
   }
 ]);
 
@@ -225,7 +213,6 @@ app.controller('TravelCtrl', [
       });
       $scope.body = '';
     };
-
   }
 ]);
 

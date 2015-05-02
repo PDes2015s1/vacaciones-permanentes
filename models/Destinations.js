@@ -9,5 +9,4 @@ var DestinationSchema = new mongoose.Schema({
   }
 });
 
-
 mongoose.model('Destination', DestinationSchema);
