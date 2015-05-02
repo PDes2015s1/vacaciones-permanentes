@@ -43,14 +43,14 @@ router.post('/travels', auth, function(req, res, next) {
   });
 });
 
-var checkPermission = function(req,res, next) {
+var checkPermission = function(req, res, next) {
   if (req.travel.user != req.payload._id)
     return res.status(401).json({
       message: 'Usuario no autorizado'
     });
   else {
     return next();
-  }  
+  }
 }
 
 router.delete('/travels/:travel', auth, checkPermission, function(req, res, next) {
@@ -135,6 +135,22 @@ router.post('/login', function(req, res, next) {
     }
   })(req, res, next);
 });
+
+// templates
+
+var myRender = function(view) {
+  return function(req, res) {
+    res.render(view, {
+      title: 'Vacacioner permanentes'
+    });
+  }
+}
+
+router.get('/view/home', myRender('home'))
+router.get('/view/travels/all', myRender('travels/all'))
+router.get('/view/travels/detail', myRender('travels/detail'))
+router.get('/view/login', myRender('users/login'))
+router.get('/view/register', myRender('users/register'))
 
 var setParam = function(req, res, next, id, model, field) {
   var query = model.findById(id);

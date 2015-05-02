@@ -1,0 +1,88 @@
+<div class="page-header" >
+  <div class="page-header" ng-show="isLoggedIn()" >
+    <h1>Mis viajes</h1>
+  </div>
+  <table class="table" ng-show="isLoggedIn()" >
+    <tr>
+      <th><a href="" ng-click="order('title')">Nombre</a></th>
+      <th><a href="" ng-click="order('startDate')">Fecha inicio</a></th>
+      <th><a href="" ng-click="order('endDate')">Fecha fin</a></th>
+      <th><a href="" ng-click="order('created_at')">Fecha de creación</a></th>
+      <th>Acciones</th>
+    </tr>
+    <tr  ng-repeat="travel in travels | orderBy : predicate : reverse">
+      <td style="font-size:20px; margin-left:10px;">
+        <a ng-show="travel.link" href="{{travel.link}}">
+        {{travel.title}}
+        </a>
+        <span ng-hide="travel.link">
+        {{travel.title}}
+        </span>
+      </td>
+      <td>
+        {{travel.startDate | amDateFormat:'D/MM/YYYY'}}
+      </td>
+      <td>
+        {{travel.endDate | amDateFormat:'D/MM/YYYY'}}
+      </td>
+      <td am-time-ago="travel.created_at">
+      </td>
+      <td>
+        <a href="#/travel/{{travel._id}}" class="btn btn-default btn-lg">
+        Detalle
+        </a>
+        <button type="button" ng-click="setTravelToRemove(travel)" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#myModal">
+        Eliminar
+        </button>
+      </td>
+    </tr>
+  </table>
+  <form ng-submit="addTravel()"
+    ng-show="isLoggedIn()" 
+    style="margin-top:30px;" class="form-inline">
+    <h3>Agregar un nuevo viaje</h3>
+    <div class="form-group input-group">
+      <label>Nombre</label>
+      <input type="text"
+        class="form-control"
+        placeholder="nombre"
+        ng-model="title"></input>
+    </div>
+    <div class="form-group input-group">
+      <label>fecha inicio</label>
+      <input type="date"
+        class="form-control"
+        placeholder="fecha inicio"
+        ng-model="startDate"></input>
+    </div>
+    <div class="form-group">
+      <label>Fecha fin</label>
+      <input type="date"
+        class="form-control"
+        placeholder="fecha fin"
+        ng-model="endDate"></input>
+    </div>
+    <button type="submit" class="btn btn-primary" style="margin-top: 25px;">Crear</button>
+  </form>
+  <div ng-hide="isLoggedIn()">
+    <h3>Usted necesita <a href="/#/login">iniciar sesión</a> o <a href="/#/register">registrarse</a> para ver los viajes o crear uno nuevo.</h3>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Advertencia</h4>
+      </div>
+      <div class="modal-body">
+        ¿Estas seguro que deseas eliminar el viaje?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button ng-click="removeTravel()" type="button" class="btn btn-danger" data-dismiss="modal">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>

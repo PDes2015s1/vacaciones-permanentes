@@ -8,7 +8,7 @@ app.config([
     $stateProvider
       .state('travels', {
         url: '/travels',
-        templateUrl: '/travels.html',
+        templateUrl: '/view/travels/all',
         controller: 'MainCtrl',
         resolve: {
           postPromise: ['travels', function(travels) {
@@ -19,7 +19,7 @@ app.config([
     $stateProvider
       .state('travel', {
         url: '/travel/{id}',
-        templateUrl: '/travel.html',
+        templateUrl: '/view/travels/detail',
         controller: 'TravelCtrl',
         resolve: {
           travel: ['$stateParams', 'travels', function($stateParams, travels) {
@@ -29,7 +29,7 @@ app.config([
       })
       .state('login', {
         url: '/login',
-        templateUrl: '/login.html',
+        templateUrl: '/view/login',
         controller: 'AuthCtrl',
         onEnter: ['$state', 'auth', function($state, auth) {
           if (auth.isLoggedIn()) {
@@ -38,7 +38,7 @@ app.config([
         }]
       }).state('home', {
         url: '/home',
-        templateUrl: '/home.html',
+        templateUrl: '/view/home',
         onEnter: ['$state', 'auth', function($state, auth) {
           if (auth.isLoggedIn()) {
             $state.go('travels');
@@ -47,7 +47,7 @@ app.config([
       })
       .state('register', {
         url: '/register',
-        templateUrl: '/register.html',
+        templateUrl: '/view/register',
         controller: 'AuthCtrl',
         onEnter: ['$state', 'auth', function($state, auth) {
           if (auth.isLoggedIn()) {
@@ -113,21 +113,27 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
 }])
 
 app.factory('travels', ['$http', 'auth', function($http, auth) {
-  var headers = { headers: {Authorization: 'Bearer ' + auth.getToken()} };
+  var headers = function(token) {
+    return {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    }
+  };
   var o = {
     travels: [],
     getAll: function() {
-      return $http.get('/travels', headers).success(function(data) {
+      return $http.get('/travels', headers(auth.getToken())).success(function(data) {
         angular.copy(data, o.travels);
       })
     },
     create: function(travel) {
-      return $http.post('/travels', travel, headers).success(function(data) {
+      return $http.post('/travels', travel, headers(auth.getToken())).success(function(data) {
         o.travels.push(data);
       });
     },
     remove: function(travel) {
-      return $http.delete('/travels/' + travel._id, headers).success(function(data) {
+      return $http.delete('/travels/' + travel._id, headers(auth.getToken())).success(function(data) {
         for (i = 0; i < o.travels.length; i++) {
           if (o.travels[i]._id == travel._id)
             o.travels.splice(i, 1);
@@ -135,12 +141,12 @@ app.factory('travels', ['$http', 'auth', function($http, auth) {
       });
     },
     get: function(id) {
-      return $http.get('/travels/' + id, headers).then(function(res) {
+      return $http.get('/travels/' + id, headers(auth.getToken())).then(function(res) {
         return res.data;
       });
     },
     addDestination: function(id, destination) {
-      return $http.post('/travels/' + id + '/destinations', destination, headers);
+      return $http.post('/travels/' + id + '/destinations', destination, headers(auth.getToken()));
     }
   };
   return o;
@@ -171,13 +177,13 @@ app.controller('MainCtrl', [
       $scope.title = '';
       $scope.link = '';
     };
-    
+
     var noValueIn = function() {
       for (var i = 0; i < arguments.length; i++) {
         if (!$scope[arguments[i]] || $scope[arguments[i]] === '') return true;
       }
       return false;
-  }
+    }
 
     $scope.isInvalidTravel = function() {
       return noValueIn('title', 'startDate', 'endDate') || $scope.startDate > $scope.endDate;
