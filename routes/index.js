@@ -43,16 +43,9 @@ router.post('/travels', auth, function(req, res, next) {
   });
 });
 
-var removeTravel = function(req, res, next) {
-  req.travel.remove(function(err) {
-    if (err) throw err;
-    res.json();
-  });
-}
-
 var checkPermission = function(req,res, next) {
   if (req.travel.user != req.payload._id)
-    return res.status(500).json({
+    return res.status(401).json({
       message: 'Usuario no autorizado'
     });
   else {
@@ -60,9 +53,14 @@ var checkPermission = function(req,res, next) {
   }  
 }
 
-router.put('/travels/:travel', removeTravel);
+router.delete('/travels/:travel', auth, checkPermission, function(req, res, next) {
+  req.travel.remove(function(err) {
+    if (err) throw err;
+    res.json();
+  });
+});
 
-router.get('/travels/:travel', function(req, res, next) {
+router.get('/travels/:travel', auth, checkPermission, function(req, res, next) {
   req.travel.populate('destinations', function(err, travel) {
     if (err) {
       return next(err);
@@ -72,7 +70,7 @@ router.get('/travels/:travel', function(req, res, next) {
   });
 });
 
-router.post('/travels/:travel/destinations', auth, function(req, res, next) {
+router.post('/travels/:travel/destinations', auth, checkPermission, function(req, res, next) {
   var destination = new Destination(req.body);
   destination.travel = req.travel;
 

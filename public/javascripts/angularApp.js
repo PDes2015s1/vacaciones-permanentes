@@ -127,7 +127,7 @@ app.factory('travels', ['$http', 'auth', function($http, auth) {
       });
     },
     remove: function(travel) {
-      return $http.put('/travels/' + travel._id, headers).success(function(data) {
+      return $http.delete('/travels/' + travel._id, headers).success(function(data) {
         for (i = 0; i < o.travels.length; i++) {
           if (o.travels[i]._id == travel._id)
             o.travels.splice(i, 1);
@@ -135,7 +135,7 @@ app.factory('travels', ['$http', 'auth', function($http, auth) {
       });
     },
     get: function(id) {
-      return $http.get('/travels/' + id).then(function(res) {
+      return $http.get('/travels/' + id, headers).then(function(res) {
         return res.data;
       });
     },
