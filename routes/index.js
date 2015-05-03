@@ -43,14 +43,24 @@ router.post('/travels', auth, function(req, res, next) {
   });
 });
 
-router.put('/travels/:travel', function(req, res, next) {
+var checkPermission = function(req, res, next) {
+  if (req.travel.user != req.payload._id)
+    return res.status(401).json({
+      message: 'Usuario no autorizado'
+    });
+  else {
+    return next();
+  }
+}
+
+router.delete('/travels/:travel', auth, checkPermission, function(req, res, next) {
   req.travel.remove(function(err) {
     if (err) throw err;
     res.json();
   });
 });
 
-router.get('/travels/:travel', function(req, res, next) {
+router.get('/travels/:travel', auth, checkPermission, function(req, res, next) {
   req.travel.populate('destinations', function(err, travel) {
     if (err) {
       return next(err);
@@ -60,7 +70,7 @@ router.get('/travels/:travel', function(req, res, next) {
   });
 });
 
-router.post('/travels/:travel/destinations', auth, function(req, res, next) {
+router.post('/travels/:travel/destinations', auth, checkPermission, function(req, res, next) {
   var destination = new Destination(req.body);
   destination.travel = req.travel;
 
@@ -126,36 +136,45 @@ router.post('/login', function(req, res, next) {
   })(req, res, next);
 });
 
-router.param('travel', function(req, res, next, id) {
-  var query = Travel.findById(id);
+// templates
 
-  query.exec(function(err, travel) {
+var myRender = function(view) {
+  return function(req, res) {
+    res.render(view, {
+      title: 'Vacacioner permanentes'
+    });
+  }
+}
+
+router.get('/view/home', myRender('home'))
+router.get('/view/travels/all', myRender('travels/all'))
+router.get('/view/travels/detail', myRender('travels/detail'))
+router.get('/view/login', myRender('users/login'))
+router.get('/view/register', myRender('users/register'))
+
+var setParam = function(req, res, next, id, model, field) {
+  var query = model.findById(id);
+
+  query.exec(function(err, value) {
     if (err) {
       return next(err);
     }
-    if (!travel) {
-      return next(new Error('can\'t find travel'));
+    if (!value) {
+      return next(new Error('can\'t find ' + field));
     }
 
-    req.travel = travel;
+    req[field] = value;
     return next();
   });
-});
+}
 
-router.param('destination', function(req, res, next, id) {
-  var query = destination.findById(id);
+var params = function(model, field) {
+  return function(req, res, next, id) {
+    setParam(req, res, next, id, model, field);
+  };
+}
 
-  query.exec(function(err, destination) {
-    if (err) {
-      return next(err);
-    }
-    if (!destination) {
-      return next(new Error('can\'t find destination'));
-    }
-
-    req.destination = destination;
-    return next();
-  });
-});
+router.param('travel', params(Travel, 'travel'));
+router.param('destination', params(Destination, 'destination'));
 
 module.exports = router;
