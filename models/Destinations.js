@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var DestinationSchema = new mongoose.Schema({
-  body: String,
+  body: {},
   created_at: { type: Date ,default: new Date()},
   travel: {
     type: mongoose.Schema.Types.ObjectId,

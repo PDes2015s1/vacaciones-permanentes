@@ -1,9 +1,9 @@
 <div class="page-header" ng-show="isLoggedIn()" >
-  <h3>
+  <h1>
     {{travel.title}}
     <span style="font-size:15px;" class="pull-right" am-time-ago="travel.created_at">
     </span>
-  </h3>
+  </h1>
 </div>
 <table class="table table-bordered table-striped" ng-show="isLoggedIn()" >
   <tr>
@@ -15,12 +15,10 @@
     <td>{{travel.endDate | amDateFormat:'D/MM/YYYY'}}</td>
   </tr>
 </table>
+<h2> Destinos </h2>
 <div ng-repeat="destination in travel.destinations" ng-show="isLoggedIn()" >
-  Destino 
   <span style="font-size:20px; margin-left:10px;">
-  {{destination.body}}
-  </span>
-  <span style="font-size:15px; margin-left:10px;" am-time-ago="destination.created_at">
+    {{destination.body.vicinity}}
   </span>
 </div>
 <form ng-submit="addDestination()"
@@ -31,6 +29,9 @@
     <input type="text"
       class="form-control"
       placeholder="Destino"
+      g-places-autocomplete
+      options="destinationOptions"
+      force-selection="true"
       ng-model="body"></input>
   </div>
   <button type="submit" class="btn btn-primary">Crear</button>

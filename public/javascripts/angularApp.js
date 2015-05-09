@@ -1,4 +1,5 @@
-var app = angular.module('vacaciones-permanentes', ['ui.router', 'angularMoment']);
+var app = angular.module('vacaciones-permanentes', ['ui.router', 'angularMoment',
+    'google.places']);
 
 app.config([
   '$stateProvider',
@@ -209,7 +210,7 @@ app.controller('TravelCtrl', [
     $scope.travel = travel;
     $scope.isLoggedIn = auth.isLoggedIn;
     $scope.addDestination = function() {
-      if ($scope.body === '') {
+      if (!$scope.body.name) {
         return;
       }
       travels.addDestination(travel._id, {
@@ -218,6 +219,9 @@ app.controller('TravelCtrl', [
         $scope.travel.destinations.push(destination);
       });
       $scope.body = '';
+    };
+    $scope.destinationOptions = {
+      types: ['(cities)']
     };
   }
 ]);
