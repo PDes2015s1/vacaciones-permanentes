@@ -15,6 +15,10 @@
     <td>{{travel.endDate | amDateFormat:'D/MM/YYYY'}}</td>
   </tr>
 </table>
+<div>
+  <ui-gmap-google-map center="map.center" zoom="map.zoom" options="options" pan='true'>
+  </ui-gmap-google-map>
+</div>
 <h2> Destinos </h2>
 <div ng-repeat="destination in travel.destinations" ng-show="isLoggedIn()" >
   <span style="font-size:20px; margin-left:10px;">

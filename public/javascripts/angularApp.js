@@ -1,5 +1,5 @@
 var app = angular.module('vacaciones-permanentes', ['ui.router', 'angularMoment',
-    'google.places']);
+    'google.places', 'uiGmapgoogle-maps']);
 
 app.config([
   '$stateProvider',
@@ -209,6 +209,8 @@ app.controller('TravelCtrl', [
   function($scope, travels, travel, auth) {
     $scope.travel = travel;
     $scope.isLoggedIn = auth.isLoggedIn;
+    $scope.map = {center: {latitude: 51.219053, longitude: 4.404418 }, zoom: 14 };
+    $scope.options = {scrollwheel: false};
     $scope.addDestination = function() {
       if (!$scope.body.name) {
         return;
