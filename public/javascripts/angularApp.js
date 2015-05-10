@@ -219,7 +219,7 @@ app.controller('TravelCtrl', [
     $scope.map = {center: {latitude: 0, longitude: 0 }, zoom: 2 };
     $scope.options = {scrollwheel: false};
     $scope.addDestination = function() {
-      if (!$scope.body.name) {
+      if (!$scope.body.name || !$scope.body.geometry) {
         return;
       }
       $scope.pol.path.unshift($scope.body.geometry.location);
@@ -228,7 +228,7 @@ app.controller('TravelCtrl', [
       }).success(function(destination) {
         $scope.travel.destinations.push(destination);
       });
-      $scope.body = '';
+      $scope.body = null;
     };
     $scope.pol = { id: 1, path: [], stroke: { color: '#6060FB', weight: 3},
         icons: [{icon: {path: google.maps.SymbolPath.BACKWARD_OPEN_ARROW},
