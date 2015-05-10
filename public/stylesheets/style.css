@@ -1,3 +1,9 @@
 .calendar{
-	margin-top:10px;
+  margin-top:10px;
+}
+
+.item-destination{
+  padding:2px;
+  font-size:20px;
+  margin-left:10px;
 }

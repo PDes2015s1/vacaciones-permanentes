@@ -5,74 +5,72 @@
     <span style="font-size:15px;" class="pull-right" am-time-ago="travel.created_at">
     </span>
   </h1>
-</div>
-<table class="table table-bordered table-striped" ng-show="isLoggedIn()" >
-  <tr>
-    <td><b>Fecha inicio<b></td>
-    <td>{{travel.startDate | amDateFormat:'D/MM/YYYY'}}</td>
-  </tr>
-  <tr>
-    <td><b>Fecha fin<b></td>
-    <td>{{travel.endDate | amDateFormat:'D/MM/YYYY'}}</td>
-  </tr>
-</table>
-
-<div class="row">
-  <div class="col-md-6">
-    <h2> Destinos </h2>
-    <div ng-repeat="destination in travel.destinations" ng-show="isLoggedIn()" >
-      <span style="font-size:20px; margin-left:10px;">
+  <table class="table table-bordered table-striped" ng-show="isLoggedIn()" >
+    <tr>
+      <td><b>Fecha inicio<b></td>
+      <td>{{travel.startDate | amDateFormat:'D/MM/YYYY'}}</td>
+    </tr>
+    <tr>
+      <td><b>Fecha fin<b></td>
+      <td>{{travel.endDate | amDateFormat:'D/MM/YYYY'}}</td>
+    </tr>
+  </table>
+  <div class="row">
+    <div class="col-md-6">
+      <h2> Destinos </h2>
+      <div class="item-destination" ng-repeat="destination in travel.destinations" ng-show="isLoggedIn()" >
+        <span >
         {{destination.title}}
-      </span>
-      <button type="button" ng-click="setDestinationToRemove(destination)" 
+        </span>
+        <button type="button" ng-click="setDestinationToRemove(destination)" 
           class="btn btn-danger pull-right" data-toggle="modal" data-target="#myModalD">
         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-      </button>
+        </button>
+      </div>
+      <form ng-submit="addDestination()"
+        ng-show="isLoggedIn()"
+        style="margin-top:30px;">
+        <h3>Agregar un nuevo destino</h3>
+        <label>Ciudad</label>
+        <div class="form-group">
+          <input type="text"
+            class="form-control"
+            placeholder="Destino"
+            g-places-autocomplete
+            options="destinationOptions"
+            ng-model="body"></input>
+        </div>
+        <label>Fecha inicio</label>
+        <div class="form-group">
+          <input type="date"
+            class="form-control"
+            ng-model="body.start"></input>
+        </div>
+        <label>Fecha Fin</label>
+        <div class="form-group">
+          <input type="date"
+            class="form-control"
+            ng-model="body.end"></input>
+        </div>
+        <button type="submit" class="btn btn-primary">Crear</button>
+        <a type="submit" href="/#/travels" class="btn btn-default">Volver</a>
+      </form>
     </div>
-
-    <form ng-submit="addDestination()"
-      ng-show="isLoggedIn()"
-      style="margin-top:30px;">
-      <h3>Agregar un nuevo destino</h3>
-	  <label>Ciudad</label>
-      <div class="form-group">
-        <input type="text"
-          class="form-control"
-          placeholder="Destino"
-          g-places-autocomplete
-          options="destinationOptions"
-          ng-model="body"></input>
-      </div>
-	  <label>Fecha inicio</label>
-      <div class="form-group">
-        <input type="date"
-          class="form-control"
-          ng-model="body.start"></input>
-      </div>
-	  <label>Fecha Fin</label>
-      <div class="form-group">
-        <input type="date"
-          class="form-control"
-          ng-model="body.end"></input>
-      </div>
-      <button type="submit" class="btn btn-primary">Crear</button>
-      <a type="submit" href="/#/travels" class="btn btn-default">Volver</a>
-    </form>
+    <div class="col-md-6">
+      <ui-gmap-google-map center="map.center" zoom="map.zoom" options="options" pan='true'>
+        <ui-gmap-polyline path="pol.path" stroke="pol.stroke" geodesic='true' fit="true" 
+          icons='pol.icons'>
+        </ui-gmap-polyline>
+        <!--    <div ng-repeat="marker in markers" >
+          <ui-gmap-marker coords="marker.coords" options="marker.options" 
+              events="marker.events" idkey="marker.id">
+              </ui-gmap-marker> 
+          </div>-->
+      </ui-gmap-google-map>
+    </div>
   </div>
-  <div class="col-md-6">
-    <ui-gmap-google-map center="map.center" zoom="map.zoom" options="options" pan='true'>
-    <ui-gmap-polyline path="pol.path" stroke="pol.stroke" geodesic='true' fit="true" 
-        icons='pol.icons'>
-    </ui-gmap-polyline>
-<!--    <div ng-repeat="marker in markers" >
-    <ui-gmap-marker coords="marker.coords" options="marker.options" 
-        events="marker.events" idkey="marker.id">
-        </ui-gmap-marker> 
-    </div>-->
-    </ui-gmap-google-map>
-  </div>
+  <div class="calendar" ui-calendar ng-model="eventSources" config="uiConfig.calendar" ui-calendar="uiConfig.calendar"></div>
 </div>
-<div class="calendar" ui-calendar ng-model="eventSources" config="uiConfig.calendar" ui-calendar="uiConfig.calendar"></div>
 <div ng-hide="isLoggedIn()">
   <h3>Usted necesita <a href="/#/login">iniciar sesión</a> o <a href="/#/register"> registrarse</a> para agergar un destino.</h3>
 </div>
@@ -82,7 +80,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span></button>
+        <span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">Advertencia</h4>
       </div>
       <div class="modal-body">
@@ -91,7 +89,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button ng-click="removeDestination()" type="button" class="btn btn-danger" 
-            data-dismiss="modal">Eliminar</button>
+          data-dismiss="modal">Eliminar</button>
       </div>
     </div>
   </div>
