@@ -230,7 +230,7 @@ $scope.uiConfig = {
     }
 	
     $scope.addDestination = function() {
-      if (!$scope.body.name || !$scope.body.geometry) {
+      if (!$scope.body.name || !$scope.body.start || !$scope.body.end) {
         return;
       }
       $scope.addMapPosition($scope.body);
@@ -240,8 +240,6 @@ $scope.uiConfig = {
 	  
       travels.addDestination(travel._id, $scope.body
        ).success(function(destination) {
-		//destination.start=new Date($scope.body.start);
-		//destination.end=new Date($scope.body.end);
         $scope.travel.destinations.push(destination);
 		$scope.body = null;
       });
@@ -274,14 +272,18 @@ $scope.uiConfig = {
     $scope.removeDestination = function() {
       travels.removeDestination(travel, $scope.destinationToRemove).success(function(data) {
         var index = travel.destinations.indexOf($scope.destinationToRemove);
-		for(i=0;i < $scope.pol.path.length;i++){
-			if( equalsLocations($scope.pol.path[i],travel.destinations[index].location)){
-				$scope.pol.path.splice(i, 1);
-			}
-		}
+		removePath(index);
         travel.destinations.splice(index, 1);
       });
     };
+	
+	function removePath(index){
+		for(i=0;i < $scope.pol.path.length;i++){
+			if( equalsLocations($scope.pol.path[i],$scope.travel.destinations[index].location)){
+				$scope.pol.path.splice(i, 1);
+			}
+		}
+	}
 	
 	function equalsLocations(locationA,locationB){
 		return locationA.A == locationB.A && locationA.B == locationB.B; 

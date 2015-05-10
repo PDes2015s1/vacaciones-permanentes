@@ -8,7 +8,7 @@
 </div>
 <table class="table table-bordered table-striped" ng-show="isLoggedIn()" >
   <tr>
-    <td><b>Fecha de inicio<b></td>
+    <td><b>Fecha inicio<b></td>
     <td>{{travel.startDate | amDateFormat:'D/MM/YYYY'}}</td>
   </tr>
   <tr>
@@ -34,6 +34,7 @@
       ng-show="isLoggedIn()"
       style="margin-top:30px;">
       <h3>Agregar un nuevo destino</h3>
+	  <label>Ciudad</label>
       <div class="form-group">
         <input type="text"
           class="form-control"
@@ -42,11 +43,13 @@
           options="destinationOptions"
           ng-model="body"></input>
       </div>
+	  <label>Fecha inicio</label>
       <div class="form-group">
         <input type="date"
           class="form-control"
           ng-model="body.start"></input>
       </div>
+	  <label>Fecha Fin</label>
       <div class="form-group">
         <input type="date"
           class="form-control"
@@ -69,7 +72,7 @@
     </ui-gmap-google-map>
   </div>
 </div>
-<div ui-calendar ng-model="eventSources" config="uiConfig.calendar" ui-calendar="uiConfig.calendar"></div>
+<div class="calendar" ui-calendar ng-model="eventSources" config="uiConfig.calendar" ui-calendar="uiConfig.calendar"></div>
 <div ng-hide="isLoggedIn()">
   <h3>Usted necesita <a href="/#/login">iniciar sesión</a> o <a href="/#/register"> registrarse</a> para agergar un destino.</h3>
 </div>
