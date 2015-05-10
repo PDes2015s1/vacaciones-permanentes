@@ -25,7 +25,32 @@
   <span style="font-size:20px; margin-left:10px;">
     {{destination.body.vicinity}}
   </span>
+  <button type="button" ng-click="setDestinationToRemove(destination)" 
+      class="btn btn-danger btn-lg" data-toggle="modal" data-target="#myModalD">
+    Eliminar
+  </button>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="myModalD" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Advertencia</h4>
+      </div>
+      <div class="modal-body">
+        ¿Estas seguro que deseas eliminar el destino?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button ng-click="removeDestination()" type="button" class="btn btn-danger" 
+            data-dismiss="modal">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <form ng-submit="addDestination()"
   ng-show="isLoggedIn()"
   style="margin-top:30px;">

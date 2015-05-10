@@ -141,6 +141,13 @@ app.factory('travels', ['$http', 'auth', function($http, auth) {
         }
       });
     },
+    removeDestination: function(travel, destination) {
+      return $http.delete('/travels/' + travel._id + '/' + destination._id + '/dest', 
+          headers()).success(function(data) {
+        var index = travel.destinations.indexOf(destination);
+        travel.destinations.splice(index, 1);
+      });
+    },
     get: function(id) {
       return $http.get('/travels/' + id, headers()).then(function(res) {
         return res.data;
@@ -224,6 +231,14 @@ app.controller('TravelCtrl', [
     };
     $scope.destinationOptions = {
       types: ['(cities)']
+    };
+    $scope.destinationToRemove;
+    $scope.setDestinationToRemove = function(destination) {
+      $scope.destinationToRemove = destination;
+    }
+    
+    $scope.removeDestination = function() {
+      travels.removeDestination(travel, $scope.destinationToRemove);
     };
   }
 ]);
