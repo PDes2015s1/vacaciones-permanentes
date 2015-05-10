@@ -218,11 +218,13 @@ app.controller('TravelCtrl', [
     $scope.isLoggedIn = auth.isLoggedIn;
     $scope.map = {center: {latitude: 0, longitude: 0 }, zoom: 2 };
     $scope.options = {scrollwheel: false};
+    $scope.destinationToRemove;
+	
     $scope.addDestination = function() {
       if (!$scope.body.name || !$scope.body.geometry) {
         return;
       }
-      $scope.pol.path.unshift($scope.body.geometry.location);
+      $scope.addMapPosition($scope.body);
       travels.addDestination(travel._id, {
         body: $scope.body
       }).success(function(destination) {
@@ -230,15 +232,27 @@ app.controller('TravelCtrl', [
       });
       $scope.body = null;
     };
+	
+	$scope.addAllMapPosition=function(destinations){
+		for(i=0;i<destinations.length;i++){
+			$scope.pol.path.unshift(new google.maps.LatLng(destinations[i].body.geometry.location.A,destinations[i].body.geometry.location.F));
+		}
+    };
+	
+	$scope.addMapPosition=function(destination){
+		$scope.pol.path.unshift(destination.geometry.location);
+    };
+	
     $scope.pol = { id: 1, path: [], stroke: { color: '#6060FB', weight: 3},
         icons: [{icon: {path: google.maps.SymbolPath.BACKWARD_OPEN_ARROW},
                     offset: '25px', repeat: '50px'
                 }]
     };
+	
     $scope.destinationOptions = {
       types: ['(cities)']
     };
-    $scope.destinationToRemove;
+	
     $scope.setDestinationToRemove = function(destination) {
       $scope.destinationToRemove = destination;
     }
@@ -246,6 +260,8 @@ app.controller('TravelCtrl', [
     $scope.removeDestination = function() {
       travels.removeDestination(travel, $scope.destinationToRemove);
     };
+	
+	$scope.addAllMapPosition(travel.destinations);
   }
 ]);
 
