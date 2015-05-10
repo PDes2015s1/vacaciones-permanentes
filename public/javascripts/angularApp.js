@@ -1,5 +1,5 @@
 var app = angular.module('vacaciones-permanentes', ['ui.router', 'angularMoment',
-    'google.places', 'uiGmapgoogle-maps']);
+    'google.places', 'uiGmapgoogle-maps', 'ui.calendar']);
 
 app.config([
   '$stateProvider',
@@ -216,23 +216,40 @@ app.controller('TravelCtrl', [
     $scope.map = {center: {latitude: 0, longitude: 0 }, zoom: 2 };
     $scope.options = {scrollwheel: false};
     $scope.destinationToRemove;
+	$scope.eventSources = [$scope.travel.destinations];
+$scope.uiConfig = {
+      calendar:{
+        height: 450,
+        editable: false,
+        header:{
+          left: '',
+          center: 'title',
+          right: 'prev,next'
+        }
+      }
+    }
 	
     $scope.addDestination = function() {
       if (!$scope.body.name || !$scope.body.geometry) {
         return;
       }
       $scope.addMapPosition($scope.body);
-      travels.addDestination(travel._id, {
-        body: $scope.body
-      }).success(function(destination) {
+	  
+	  $scope.body.title=$scope.body.vicinity;
+	  $scope.body.location=$scope.body.geometry.location;
+	  
+      travels.addDestination(travel._id, $scope.body
+       ).success(function(destination) {
+		//destination.start=new Date($scope.body.start);
+		//destination.end=new Date($scope.body.end);
         $scope.travel.destinations.push(destination);
+		$scope.body = null;
       });
-      $scope.body = null;
     };
 	
 	$scope.addAllMapPosition=function(destinations){
 		for(i=0;i<destinations.length;i++){
-			$scope.pol.path.unshift(new google.maps.LatLng(destinations[i].body.geometry.location.A,destinations[i].body.geometry.location.F));
+			$scope.pol.path.unshift(new google.maps.LatLng(destinations[i].location.A,destinations[i].location.F));
 		}
     };
 	
@@ -258,7 +275,7 @@ app.controller('TravelCtrl', [
       travels.removeDestination(travel, $scope.destinationToRemove).success(function(data) {
         var index = travel.destinations.indexOf($scope.destinationToRemove);
 		for(i=0;i < $scope.pol.path.length;i++){
-			if( equalsLocations($scope.pol.path[i],travel.destinations[index].body.geometry.location)){
+			if( equalsLocations($scope.pol.path[i],travel.destinations[index].location)){
 				$scope.pol.path.splice(i, 1);
 			}
 		}

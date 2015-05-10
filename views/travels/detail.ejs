@@ -22,7 +22,7 @@
     <h2> Destinos </h2>
     <div ng-repeat="destination in travel.destinations" ng-show="isLoggedIn()" >
       <span style="font-size:20px; margin-left:10px;">
-        {{destination.body.vicinity}}
+        {{destination.title}}
       </span>
       <button type="button" ng-click="setDestinationToRemove(destination)" 
           class="btn btn-danger pull-right" data-toggle="modal" data-target="#myModalD">
@@ -42,6 +42,16 @@
           options="destinationOptions"
           ng-model="body"></input>
       </div>
+      <div class="form-group">
+        <input type="date"
+          class="form-control"
+          ng-model="body.start"></input>
+      </div>
+      <div class="form-group">
+        <input type="date"
+          class="form-control"
+          ng-model="body.end"></input>
+      </div>
       <button type="submit" class="btn btn-primary">Crear</button>
       <a type="submit" href="/#/travels" class="btn btn-default">Volver</a>
     </form>
@@ -59,6 +69,7 @@
     </ui-gmap-google-map>
   </div>
 </div>
+<div ui-calendar ng-model="eventSources" config="uiConfig.calendar" ui-calendar="uiConfig.calendar"></div>
 <div ng-hide="isLoggedIn()">
   <h3>Usted necesita <a href="/#/login">iniciar sesión</a> o <a href="/#/register"> registrarse</a> para agergar un destino.</h3>
 </div>
