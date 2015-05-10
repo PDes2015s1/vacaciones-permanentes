@@ -216,18 +216,24 @@ app.controller('TravelCtrl', [
   function($scope, travels, travel, auth) {
     $scope.travel = travel;
     $scope.isLoggedIn = auth.isLoggedIn;
-    $scope.map = {center: {latitude: 51.219053, longitude: 4.404418 }, zoom: 14 };
+    $scope.map = {center: {latitude: 0, longitude: 0 }, zoom: 2 };
     $scope.options = {scrollwheel: false};
     $scope.addDestination = function() {
       if (!$scope.body.name) {
         return;
       }
+      $scope.pol.path.unshift($scope.body.geometry.location);
       travels.addDestination(travel._id, {
         body: $scope.body
       }).success(function(destination) {
         $scope.travel.destinations.push(destination);
       });
       $scope.body = '';
+    };
+    $scope.pol = { id: 1, path: [], stroke: { color: '#6060FB', weight: 3},
+        icons: [{icon: {path: google.maps.SymbolPath.BACKWARD_OPEN_ARROW},
+                    offset: '25px', repeat: '50px'
+                }]
     };
     $scope.destinationOptions = {
       types: ['(cities)']

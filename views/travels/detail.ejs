@@ -16,19 +16,52 @@
     <td>{{travel.endDate | amDateFormat:'D/MM/YYYY'}}</td>
   </tr>
 </table>
+
 <div>
-  <ui-gmap-google-map center="map.center" zoom="map.zoom" options="options" pan='true'>
-  </ui-gmap-google-map>
+  <div>
+    <h2> Destinos </h2>
+    <div ng-repeat="destination in travel.destinations" ng-show="isLoggedIn()" >
+      <span style="font-size:20px; margin-left:10px;">
+        {{destination.body.vicinity}}
+      </span>
+      <button type="button" ng-click="setDestinationToRemove(destination)" 
+          class="btn btn-danger btn-lg" data-toggle="modal" data-target="#myModalD">
+        Eliminar
+      </button>
+    </div>
+
+    <form ng-submit="addDestination()"
+      ng-show="isLoggedIn()"
+      style="margin-top:30px;">
+      <h3>Agregar un nuevo destino</h3>
+      <div class="form-group">
+        <input type="text"
+          class="form-control"
+          placeholder="Destino"
+          g-places-autocomplete
+          options="destinationOptions"
+          force-selection="true"
+          ng-model="body"></input>
+      </div>
+      <button type="submit" class="btn btn-primary">Crear</button>
+      <a type="submit" href="/#/travels" class="btn btn-default">Volver</a>
+    </form>
+  </div>
+  <div>
+    <ui-gmap-google-map center="map.center" zoom="map.zoom" options="options" pan='true'>
+    <ui-gmap-polyline path="pol.path" stroke="pol.stroke" geodesic='true' fit="true" 
+        icons='pol.icons'>
+    </ui-gmap-polyline>
+<!--    <div ng-repeat="marker in markers" >
+    <ui-gmap-marker coords="marker.coords" options="marker.options" 
+        events="marker.events" idkey="marker.id">
+        </ui-gmap-marker> 
+    </div>-->
+    </ui-gmap-google-map>
+  </div>
 </div>
-<h2> Destinos </h2>
-<div ng-repeat="destination in travel.destinations" ng-show="isLoggedIn()" >
-  <span style="font-size:20px; margin-left:10px;">
-    {{destination.body.vicinity}}
-  </span>
-  <button type="button" ng-click="setDestinationToRemove(destination)" 
-      class="btn btn-danger btn-lg" data-toggle="modal" data-target="#myModalD">
-    Eliminar
-  </button>
+<div ng-hide="isLoggedIn()">
+  <h3>Usted necesita <a href="/#/login">iniciar sesión</a> o <a href="/#/register"> registrarse</a> para agergar un destino.</h3>
 </div>
 <!-- Modal -->
 <div class="modal fade" id="myModalD" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -49,24 +82,4 @@
       </div>
     </div>
   </div>
-</div>
-
-<form ng-submit="addDestination()"
-  ng-show="isLoggedIn()"
-  style="margin-top:30px;">
-  <h3>Agregar un nuevo destino</h3>
-  <div class="form-group">
-    <input type="text"
-      class="form-control"
-      placeholder="Destino"
-      g-places-autocomplete
-      options="destinationOptions"
-      force-selection="true"
-      ng-model="body"></input>
-  </div>
-  <button type="submit" class="btn btn-primary">Crear</button>
-  <a type="submit" href="/#/travels" class="btn btn-default">Volver</a>
-</form>
-<div ng-hide="isLoggedIn()">
-  <h3>Usted necesita <a href="/#/login">iniciar sesión</a> o <a href="/#/register"> registrarse</a> para agergar un destino.</h3>
 </div>
