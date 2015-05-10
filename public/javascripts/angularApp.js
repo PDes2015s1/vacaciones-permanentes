@@ -143,10 +143,7 @@ app.factory('travels', ['$http', 'auth', function($http, auth) {
     },
     removeDestination: function(travel, destination) {
       return $http.delete('/travels/' + travel._id + '/' + destination._id + '/dest', 
-          headers()).success(function(data) {
-        var index = travel.destinations.indexOf(destination);
-        travel.destinations.splice(index, 1);
-      });
+          headers());
     },
     get: function(id) {
       return $http.get('/travels/' + id, headers()).then(function(res) {
@@ -258,8 +255,20 @@ app.controller('TravelCtrl', [
     }
     
     $scope.removeDestination = function() {
-      travels.removeDestination(travel, $scope.destinationToRemove);
+      travels.removeDestination(travel, $scope.destinationToRemove).success(function(data) {
+        var index = travel.destinations.indexOf($scope.destinationToRemove);
+		for(i=0;i < $scope.pol.path.length;i++){
+			if( equalsLocations($scope.pol.path[i],travel.destinations[index].body.geometry.location)){
+				$scope.pol.path.splice(i, 1);
+			}
+		}
+        travel.destinations.splice(index, 1);
+      });
     };
+	
+	function equalsLocations(locationA,locationB){
+		return locationA.A == locationB.A && locationA.B == locationB.B; 
+	}
 	
 	$scope.addAllMapPosition(travel.destinations);
   }
