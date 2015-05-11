@@ -60,6 +60,13 @@ router.delete('/travels/:travel', auth, checkPermission, function(req, res, next
   });
 });
 
+router.delete('/travels/:travel/:destination/dest', auth, checkPermission, function(req, res, next) {
+  req.destination.remove(function(err) {
+    if (err) throw err;
+    res.json();
+  });
+});
+
 router.get('/travels/:travel', auth, checkPermission, function(req, res, next) {
   req.travel.populate('destinations', function(err, travel) {
     if (err) {
