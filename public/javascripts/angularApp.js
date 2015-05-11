@@ -255,12 +255,15 @@ app.controller('TravelCtrl', [
     };
 
     $scope.addDestination = function() {
-      if (!$scope.body.name || !$scope.body.start || !$scope.body.end) {
+      if (!$scope.body.name || !$scope.body.start || !$scope.body.end || 
+          $scope.body.start > $scope.body.end || 
+          $scope.travel.destinations.length > 0 && 
+          $scope.body.start < $scope.travel.destinations[0].end) {
         return;
       }
       $scope.addMapPosition($scope.body);
 
-      $scope.body.title = $scope.body.vicinity;
+      $scope.body.title = $scope.body.name;
       $scope.body.location = $scope.body.geometry.location;
 
       travels.addDestination(travel._id, $scope.body).success(function(destination) {
