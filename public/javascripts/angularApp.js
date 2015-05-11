@@ -1,4 +1,6 @@
-var app = angular.module('flapperNews', ['ui.router', 'angularMoment']);
+var app = angular.module('vacaciones-permanentes', ['ui.router', 'angularMoment',
+  'google.places', 'uiGmapgoogle-maps', 'ui.calendar'
+]);
 
 app.config([
   '$stateProvider',
@@ -8,7 +10,7 @@ app.config([
     $stateProvider
       .state('travels', {
         url: '/travels',
-        templateUrl: '/travels.html',
+        templateUrl: '/view/travels/all',
         controller: 'MainCtrl',
         resolve: {
           postPromise: ['travels', function(travels) {
@@ -19,7 +21,7 @@ app.config([
     $stateProvider
       .state('travel', {
         url: '/travel/{id}',
-        templateUrl: '/travel.html',
+        templateUrl: '/view/travels/detail',
         controller: 'TravelCtrl',
         resolve: {
           travel: ['$stateParams', 'travels', function($stateParams, travels) {
@@ -29,7 +31,7 @@ app.config([
       })
       .state('login', {
         url: '/login',
-        templateUrl: '/login.html',
+        templateUrl: '/view/login',
         controller: 'AuthCtrl',
         onEnter: ['$state', 'auth', function($state, auth) {
           if (auth.isLoggedIn()) {
@@ -38,7 +40,7 @@ app.config([
         }]
       }).state('home', {
         url: '/home',
-        templateUrl: '/home.html',
+        templateUrl: '/view/home',
         onEnter: ['$state', 'auth', function($state, auth) {
           if (auth.isLoggedIn()) {
             $state.go('travels');
@@ -47,7 +49,7 @@ app.config([
       })
       .state('register', {
         url: '/register',
-        templateUrl: '/register.html',
+        templateUrl: '/view/register',
         controller: 'AuthCtrl',
         onEnter: ['$state', 'auth', function($state, auth) {
           if (auth.isLoggedIn()) {
@@ -55,7 +57,6 @@ app.config([
           }
         }]
       });
-
 
     $urlRouterProvider.otherwise('home');
   }
@@ -114,49 +115,44 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
 }])
 
 app.factory('travels', ['$http', 'auth', function($http, auth) {
+  var headers = function() {
+    return {
+      headers: {
+        Authorization: 'Bearer ' + auth.getToken()
+      }
+    }
+  };
   var o = {
     travels: [],
     getAll: function() {
-      return $http.get('/travels', {
-        headers: {
-          Authorization: 'Bearer ' + auth.getToken()
-        }
-      }).success(function(data) {
+      return $http.get('/travels', headers()).success(function(data) {
         angular.copy(data, o.travels);
       })
     },
     create: function(travel) {
-      return $http.post('/travels', travel, {
-        headers: {
-          Authorization: 'Bearer ' + auth.getToken()
-        }
-      }).success(function(data) {
+      return $http.post('/travels', travel, headers()).success(function(data) {
         o.travels.push(data);
       });
     },
     remove: function(travel) {
-      return $http.put('/travels/' + travel._id, {
-        headers: {
-          Authorization: 'Bearer ' + auth.getToken()
-        }
-      }).success(function(data) {
+      return $http.delete('/travels/' + travel._id, headers()).success(function(data) {
         for (i = 0; i < o.travels.length; i++) {
           if (o.travels[i]._id == travel._id)
             o.travels.splice(i, 1);
         }
       });
     },
+    removeDestination: function(travel, destination) {
+      return $http.delete('/travels/' + travel._id + '/' + destination._id + '/dest',
+        headers());
+    },
     get: function(id) {
-      return $http.get('/travels/' + id).then(function(res) {
+      return $http.get('/travels/' + id, headers()).then(function(res) {
         return res.data;
       });
     },
     addDestination: function(id, destination) {
-      return $http.post('/travels/' + id + '/destinations', destination, {
-        headers: {
-          Authorization: 'Bearer ' + auth.getToken()
-        }
-      });
+      return $http.post('/travels/' + id + '/destinations', destination, headers());
     }
   };
   return o;
@@ -165,7 +161,6 @@ app.factory('travels', ['$http', 'auth', function($http, auth) {
 app.controller('MainCtrl', [
   '$scope', 'travels', 'auth', '$filter',
   function($scope, travels, auth, $filter) {
-    $scope.test = 'Hello world!';
     var orderBy = $filter('orderBy');
     $scope.reverse = true;
     $scope.travels = travels.travels;
@@ -189,8 +184,15 @@ app.controller('MainCtrl', [
       $scope.link = '';
     };
 
+    var noValueIn = function() {
+      for (var i = 0; i < arguments.length; i++) {
+        if (!$scope[arguments[i]] || $scope[arguments[i]] === '') return true;
+      }
+      return false;
+    }
+
     $scope.isInvalidTravel = function() {
-      return !$scope.title || $scope.title === '' || !$scope.startDate || $scope.startDate === '' || !$scope.endDate || $scope.endDate === '';
+      return noValueIn('title', 'startDate', 'endDate') || $scope.startDate > $scope.endDate;
     }
 
     $scope.removeTravel = function() {
@@ -201,8 +203,6 @@ app.controller('MainCtrl', [
       $scope.reverse = !$scope.reverse;
       $scope.predicate = predicate;
     };
-    //$scope.order('title');
-
   }
 ]);
 
@@ -214,18 +214,103 @@ app.controller('TravelCtrl', [
   function($scope, travels, travel, auth) {
     $scope.travel = travel;
     $scope.isLoggedIn = auth.isLoggedIn;
-    $scope.addDestination = function() {
-      if ($scope.body === '') {
-        return;
+    $scope.destinationToRemove;
+    $scope.map = {
+      center: {
+        latitude: 0,
+        longitude: 0
+      },
+      zoom: 2
+    };
+    $scope.options = {
+      scrollwheel: false
+    };
+    $scope.eventSources = [$scope.travel.destinations];
+    $scope.uiConfig = {
+      calendar: {
+        height: 450,
+        editable: false,
+        header: {
+          left: '',
+          center: 'title',
+          right: 'prev,next'
+        }
       }
-      travels.addDestination(travel._id, {
-        body: $scope.body
-      }).success(function(destination) {
-        $scope.travel.destinations.push(destination);
-      });
-      $scope.body = '';
+    }
+	
+    $scope.pol = {
+      id: 1,
+      path: [],
+      stroke: {
+        color: '#6060FB',
+        weight: 3
+      },
+      icons: [{
+        icon: {
+          path: google.maps.SymbolPath.BACKWARD_OPEN_ARROW
+        },
+        offset: '25px',
+        repeat: '50px'
+      }]
     };
 
+    $scope.addDestination = function() {
+      if (!$scope.body.name || !$scope.body.start || !$scope.body.end || 
+          $scope.body.start > $scope.body.end || 
+          $scope.travel.destinations.length > 0 && 
+          $scope.body.start < $scope.travel.destinations[0].end) {
+        return;
+      }
+      $scope.addMapPosition($scope.body);
+
+      $scope.body.title = $scope.body.name;
+      $scope.body.location = $scope.body.geometry.location;
+
+      travels.addDestination(travel._id, $scope.body).success(function(destination) {
+        $scope.travel.destinations.push(destination);
+        $scope.body = null;
+      });
+    };
+
+    $scope.addAllMapPosition = function(destinations) {
+      for (i = 0; i < destinations.length; i++) {
+        $scope.pol.path.unshift(new google.maps.LatLng(destinations[i].location.A, destinations[i].location.F));
+      }
+    };
+
+    $scope.addMapPosition = function(destination) {
+      $scope.pol.path.unshift(destination.geometry.location);
+    };
+
+    $scope.destinationOptions = {
+      types: ['(cities)']
+    };
+
+    $scope.setDestinationToRemove = function(destination) {
+      $scope.destinationToRemove = destination;
+    }
+
+    $scope.removeDestination = function() {
+      travels.removeDestination(travel, $scope.destinationToRemove).success(function(data) {
+        var index = travel.destinations.indexOf($scope.destinationToRemove);
+        removePath(index);
+        travel.destinations.splice(index, 1);
+      });
+    };
+
+    function removePath(index) {
+      for (i = 0; i < $scope.pol.path.length; i++) {
+        if (equalsLocations($scope.pol.path[i], $scope.travel.destinations[index].location)) {
+          $scope.pol.path.splice(i, 1);
+        }
+      }
+    }
+
+    function equalsLocations(locationA, locationB) {
+      return locationA.A == locationB.A && locationA.B == locationB.B;
+    }
+
+    $scope.addAllMapPosition(travel.destinations);
   }
 ]);
 
