@@ -56,6 +56,16 @@ app.config([
             $state.go('travels');
           }
         }]
+      })
+      .state('destination', {
+        url: '/destination/{id}',
+        templateUrl: '/view/destinations/detail',
+        controller: 'destinationCtrl',
+        resolve: {
+          travel: ['$stateParams', 'destinations', function($stateParams, destinations) {
+            return [];/*destinations.get($stateParams.id);*/
+          }]
+        }
       });
 
     $urlRouterProvider.otherwise('home');
@@ -113,6 +123,10 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
 
   return auth;
 }])
+
+app.factory('destinations', ['$http', 'auth', function($http, auth) {
+  return {};
+}]);
 
 app.factory('travels', ['$http', 'auth', function($http, auth) {
   var headers = function() {
@@ -313,6 +327,13 @@ app.controller('TravelCtrl', [
     $scope.addAllMapPosition(travel.destinations);
   }
 ]);
+
+app.controller('destinationCtrl', [
+  '$scope',
+  'auth',
+  function($scope, auth) {
+  
+}]);
 
 app.controller('AuthCtrl', [
   '$scope',

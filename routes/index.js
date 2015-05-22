@@ -158,6 +158,7 @@ router.get('/view/travels/all', myRender('travels/all'))
 router.get('/view/travels/detail', myRender('travels/detail'))
 router.get('/view/login', myRender('users/login'))
 router.get('/view/register', myRender('users/register'))
+router.get('/view/destinations/detail', myRender('destinations/detail'))
 
 var setParam = function(req, res, next, id, model, field) {
   var query = model.findById(id);

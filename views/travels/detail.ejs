@@ -26,6 +26,9 @@
           class="btn btn-danger pull-right" data-toggle="modal" data-target="#myModalD">
         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
         </button>
+        <a href="#/destination/{{destination._id}}" class="btn btn-info pull-right">
+        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+        </a>
       </div>
       <form ng-submit="addDestination()"
         ng-show="isLoggedIn()"
