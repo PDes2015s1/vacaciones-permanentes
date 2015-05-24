@@ -17,7 +17,25 @@
     <tr>
       <td><b>Hospedaje<b></td>
       <td>
-	    <button type="button" class="btn btn-primary" ng-if="!destination.lodging" data-toggle="modal" data-target="#modalNewLodging">Agregar</button>
+	    <div ng-show="!destination.lodging">
+          <form ng-submit="addLodging()"
+            ng-show="isLoggedIn()" class="form-inline ng-pristine ng-valid">
+            <div class="form-group">
+              <input type="text"
+                class="form-control"
+                placeholder="Hospedaje"
+                g-places-autocomplete
+                options="pointOptions"
+                ng-model="lodging"></input>
+            </div>
+            <button type="submit" class="btn btn-primary">Crear</button>
+          </form>
+		</div>
+	    <div ng-show="destination.lodging">
+          <p><b>Título:</b> {{destination.lodging.title}}</p>
+          <p><b>Dirección:</b> {{destination.lodging.formatted_address}}</p>
+		  <p><b>Teléfono:</b> {{destination.lodging.formatted_phone_number}}</p>
+		</div>
 	  </td>
     </tr>
   </table>
@@ -61,6 +79,9 @@
               events="pointOfInterest.events" idkey="$index">
               </ui-gmap-marker> 
         </div>
+        <ui-gmap-marker coords="destination.lodging.location" options="destination.lodging.options"
+            events="destination.lodging.events" idkey="-1">
+        </ui-gmap-marker> 
       </ui-gmap-google-map>
     </div>
   </div>
@@ -100,37 +121,6 @@
       <div class="modal-body">
         <p><b>Dirección:</b> {{pointOfInterestToShow.formatted_address}}</p>
 		<p><b>Teléfono:</b> {{pointOfInterestToShow.formatted_phone_number}}</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Modal new lodging-->
-<div class="modal fade" id="modalNewLodging" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Añadir hospedaje</h4>
-      </div>
-      <div class="modal-body">
-      <form ng-submit="addLodging()"
-        ng-show="isLoggedIn()"
-        style="margin-top:30px;">
-        <label>Hospedaje</label>
-        <div class="form-group">
-          <input type="text"
-            class="form-control"
-            placeholder="Hospedaje"
-            g-places-autocomplete
-            options="pointOptions"
-            ng-model="pointOfInterest"></input>
-        </div>
-        <button type="submit" class="btn btn-primary">Crear</button>
-      </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>

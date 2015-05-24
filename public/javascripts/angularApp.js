@@ -421,7 +421,13 @@ app.controller('destinationCtrl', [
 		$scope.pointOfInterestToShow=point;
 	}
 	$scope.addLodging=function(){
-	
+      myLocation = $scope.lodging.geometry.location;
+      $scope.lodging.title = $scope.lodging.name;
+      $scope.lodging.location = {latitude:myLocation.A,longitude:myLocation.F};
+	  $scope.destination.lodging=$scope.lodging;
+      var latlng = new google.maps.LatLng(myLocation.A, myLocation.F);
+      bounds.extend(latlng);
+      $scope.map.googleMap.getGMap().fitBounds(bounds);
 	}
   }
 ]);
