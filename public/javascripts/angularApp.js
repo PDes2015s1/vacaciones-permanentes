@@ -62,8 +62,8 @@ app.config([
         templateUrl: '/view/destinations/detail',
         controller: 'destinationCtrl',
         resolve: {
-          travel: ['$stateParams', 'destinations', function($stateParams, destinations) {
-            return [];/*destinations.get($stateParams.id);*/
+          destination: ['$stateParams', 'destinations', function($stateParams, destinations) {
+            return destinations.get($stateParams.id);
           }]
         }
       });
@@ -125,7 +125,21 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
 }])
 
 app.factory('destinations', ['$http', 'auth', function($http, auth) {
-  return {};
+  var headers = function() {
+    return {
+      headers: {
+        Authorization: 'Bearer ' + auth.getToken()
+      }
+    }
+  };
+  var o = {
+    get: function(id) {
+      return $http.get('/destinations/' + id, headers()).then(function(res) {
+        return res.data;
+      });
+    }
+  }
+  return o;
 }]);
 
 app.factory('travels', ['$http', 'auth', function($http, auth) {
@@ -251,7 +265,7 @@ app.controller('TravelCtrl', [
         }
       }
     }
-	
+
     $scope.pol = {
       id: 1,
       path: [],
@@ -269,10 +283,10 @@ app.controller('TravelCtrl', [
     };
 
     $scope.addDestination = function() {
-      if (!$scope.body.name || !$scope.body.start || !$scope.body.end || 
-          $scope.body.start > $scope.body.end || 
-          $scope.travel.destinations.length > 0 && 
-          $scope.body.start < $scope.travel.destinations[0].end) {
+      if (!$scope.body.name || !$scope.body.start || !$scope.body.end ||
+        $scope.body.start > $scope.body.end ||
+        $scope.travel.destinations.length > 0 &&
+        $scope.body.start < $scope.travel.destinations[0].end) {
         return;
       }
       $scope.addMapPosition($scope.body);
@@ -330,10 +344,46 @@ app.controller('TravelCtrl', [
 
 app.controller('destinationCtrl', [
   '$scope',
+  'destination',
   'auth',
-  function($scope, auth) {
-  
-}]);
+  function($scope, destination, auth) {
+    $scope.isLoggedIn = auth.isLoggedIn;
+    $scope.destination = destination;
+    $scope.pointOptions = {
+      types: ['establishment']
+    };
+    $scope.map = {
+      googleMap: {},
+      center: {
+        latitude: 0,
+        longitude: 0
+      },
+      zoom: 2
+    };
+    $scope.options = {
+      scrollwheel: false
+    };
+    $scope.markers = [];
+    //Para centrar el mapa correctamente
+    var bounds = new google.maps.LatLngBounds();
+
+    $scope.addPointOfInterest = function() {
+      if (!$scope.pointOfInterest || !$scope.pointOfInterest.name) return;
+      myLocation = $scope.pointOfInterest.geometry.location;
+      $scope.markers.push({
+        coords: {
+          latitude: myLocation.A,
+          longitude: myLocation.F
+        },
+        'id': 'someKey-' + myLocation.A + '' + myLocation.F
+      });
+      //centrando mapa
+      var latlng = new google.maps.LatLng(myLocation.A, myLocation.F);
+      bounds.extend(latlng);
+      $scope.map.googleMap.getGMap().fitBounds(bounds);
+    }
+  }
+]);
 
 app.controller('AuthCtrl', [
   '$scope',

@@ -143,6 +143,16 @@ router.post('/login', function(req, res, next) {
   })(req, res, next);
 });
 
+router.get('/destinations/:destination', auth, function(req, res, next) {
+  req.destination.populate('pointsofinterest', function(err, destination) {
+    if (err) {
+      return next(err);
+    }
+
+    res.json(destination);
+  });
+});
+
 // templates
 
 var myRender = function(view) {

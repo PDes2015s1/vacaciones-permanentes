@@ -1,0 +1,80 @@
+<style>.angular-google-map-container { height: 400px; }</style>
+<div class="page-header" ng-show="isLoggedIn()" >
+  <h1>
+    Destino {{destination.title}}
+    <span style="font-size:15px;" class="pull-right" am-time-ago="destination.created_at">
+    </span>
+  </h1>
+  <table class="table table-bordered table-striped" ng-show="isLoggedIn()" >
+    <tr>
+      <td><b>Fecha inicio<b></td>
+      <td>{{destination.start | amDateFormat:'D/MM/YYYY'}}</td>
+    </tr>
+    <tr>
+      <td><b>Fecha fin<b></td>
+      <td>{{destination.end | amDateFormat:'D/MM/YYYY'}}</td>
+    </tr>
+  </table>
+  <div class="row">
+    <div class="col-md-6">
+      <h2> Puntos de interés </h2>
+      <div class="item-destination" ng-repeat="pointOfInterest in destination.pointsOfInterest" ng-show="isLoggedIn()" >
+        <span >
+        {{pointOfInterest.title}}
+        </span>
+        <button type="button" ng-click="setPointToRemove(pointOfInterest)" 
+          class="btn btn-danger pull-right" data-toggle="modal" data-target="#myModalD">
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </button>
+      </div>
+      <form ng-submit="addPointOfInterest()"
+        ng-show="isLoggedIn()"
+        style="margin-top:30px;">
+        <h3>Agregar un nuevo punto de interés</h3>
+        <label>Punto</label>
+        <div class="form-group">
+          <input type="text"
+            class="form-control"
+            placeholder="Título"
+            g-places-autocomplete
+            options="pointOptions"
+            ng-model="pointOfInterest"></input>
+        </div>
+        <button type="submit" class="btn btn-primary">Crear</button>
+        <a type="submit" href="/#/travel/{{destination.travel}}" class="btn btn-default">Volver</a>
+      </form>
+    </div>
+    <div class="col-md-6">
+      <ui-gmap-google-map center="map.center" zoom="map.zoom" options="options" pan='true' control="map.googleMap">
+        <div ng-repeat="marker in markers" >
+          <ui-gmap-marker coords="marker.coords" options="marker.options"
+              events="marker.events" idkey="marker.id">
+              </ui-gmap-marker> 
+        </div>
+      </ui-gmap-google-map>
+    </div>
+  </div>
+</div>
+<div ng-hide="isLoggedIn()">
+  <h3>Usted necesita <a href="/#/login">iniciar sesión</a> o <a href="/#/register"> registrarse</a> para agergar un punto de interés.</h3>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="myModalD" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Advertencia</h4>
+      </div>
+      <div class="modal-body">
+        ¿Estas seguro que deseas eliminar el punto de interés?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button ng-click="removePoint()" type="button" class="btn btn-danger" 
+          data-dismiss="modal">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>

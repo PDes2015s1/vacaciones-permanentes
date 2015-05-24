@@ -11,7 +11,7 @@ require('./models/Travels');
 require('./models/Destinations');
 require('./config/passport');
 
-mongoose.connect('mongodb://localhost/news1');
+mongoose.connect('mongodb://localhost/travels');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
