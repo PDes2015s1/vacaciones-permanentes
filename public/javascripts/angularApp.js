@@ -424,6 +424,7 @@ app.controller('destinationCtrl', [
 		$scope.pointOfInterestToShow=point;
 	}
 	$scope.addLodging=function(){
+	  if (!$scope.lodging || !$scope.lodging.name) return;
       myLocation = $scope.lodging.geometry.location;
       $scope.lodging.title = $scope.lodging.name;
       $scope.lodging.location = {latitude:myLocation.A,longitude:myLocation.F};
@@ -437,6 +438,7 @@ app.controller('destinationCtrl', [
 	$scope.removeLodging=function(){
 	  destinations.removePoint(destination, $scope.destination.lodging).success(function(data) {
         $scope.destination.lodging=null;
+		$scope.lodging=null;
       });
 	}
   }
