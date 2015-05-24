@@ -369,7 +369,7 @@ app.controller('destinationCtrl', [
       zoom: 2
     };
     $scope.options = {
-      scrollwheel: false
+      scrollwheel: true
     };
 
     $scope.markers = [];
@@ -378,6 +378,10 @@ app.controller('destinationCtrl', [
 
     $scope.addPointOfInterest = function() {
       if (!$scope.pointOfInterest || !$scope.pointOfInterest.name) return;
+	  
+	  //alert(JSON.stringify($scope.pointOfInterest.formatted_address))
+	  //alert(JSON.stringify($scope.pointOfInterest.formatted_phone_number))
+	  //alert(JSON.stringify($scope.pointOfInterest))
 	  
 	  myLocation = $scope.pointOfInterest.geometry.location;
       $scope.pointOfInterest.title = $scope.pointOfInterest.name;
@@ -415,6 +419,9 @@ app.controller('destinationCtrl', [
 
 	$scope.showPointOfInterest=function(point){
 		$scope.pointOfInterestToShow=point;
+	}
+	$scope.addLodging=function(){
+	
 	}
   }
 ]);
