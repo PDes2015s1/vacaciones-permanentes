@@ -144,6 +144,9 @@ app.factory('destinations', ['$http', 'auth', function($http, auth) {
     removePoint: function(destination, point) {
       return $http.delete('/destinations/' + destination._id + '/' + point._id + '/',
         headers());
+    },
+    addLodging: function(idDestintation, lodging) {
+      return $http.post('/destinations/' + idDestintation + '/lodging', lodging, headers());
     }
   }
   return o;
@@ -424,13 +427,17 @@ app.controller('destinationCtrl', [
       myLocation = $scope.lodging.geometry.location;
       $scope.lodging.title = $scope.lodging.name;
       $scope.lodging.location = {latitude:myLocation.A,longitude:myLocation.F};
-	  $scope.destination.lodging=$scope.lodging;
-      var latlng = new google.maps.LatLng(myLocation.A, myLocation.F);
-      bounds.extend(latlng);
-      $scope.map.googleMap.getGMap().fitBounds(bounds);
+	  destinations.addLodging(destination._id, $scope.lodging).success(function(lodging) {
+        $scope.destination.lodging=lodging;
+        var latlng = new google.maps.LatLng(myLocation.A, myLocation.F);
+        bounds.extend(latlng);
+        $scope.map.googleMap.getGMap().fitBounds(bounds);
+	  });
 	}
 	$scope.removeLodging=function(){
-		$scope.destination.lodging=null;
+	  destinations.removePoint(destination, $scope.destination.lodging).success(function(data) {
+        $scope.destination.lodging=null;
+      });
 	}
   }
 ]);

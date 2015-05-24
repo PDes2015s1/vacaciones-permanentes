@@ -145,7 +145,7 @@ router.post('/login', function(req, res, next) {
 });
 
 router.get('/destinations/:destination', auth, function(req, res, next) {
-  req.destination.populate('pointsOfInterest', function(err, destination) {
+  req.destination.populate(['pointsOfInterest','lodging'], function(err, destination) {
     if (err) {
       return next(err);
     }
@@ -157,14 +157,33 @@ router.get('/destinations/:destination', auth, function(req, res, next) {
 router.post('/destinations/:destination/pointsOfInterest', auth, function(req, res, next) {
   var pointOfInterest = new PointOfInterest(req.body);
   pointOfInterest.destination = req.destination;
-  console.log(req.body)
+
   pointOfInterest.save(function(err, pointOfInterest) {
     if (err) {
       return next(err);
     }
 	
     req.destination.pointsOfInterest.push(pointOfInterest);
-    req.destination.save(function(err, travel) {
+    req.destination.save(function(err, destination) {
+      if (err) {
+        return next(err);
+      }
+
+      res.json(pointOfInterest);
+    });
+  });
+});
+
+router.post('/destinations/:destination/lodging', auth, function(req, res, next) {
+  var pointOfInterest = new PointOfInterest(req.body);
+
+  pointOfInterest.save(function(err, pointOfInterest) {
+    if (err) {
+      return next(err);
+    }
+	
+    req.destination.lodging = pointOfInterest;
+    req.destination.save(function(err, destination) {
       if (err) {
         return next(err);
       }
