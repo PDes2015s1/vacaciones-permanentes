@@ -378,6 +378,7 @@ app.controller('destinationCtrl', [
 
     $scope.addPointOfInterest = function() {
       if (!$scope.pointOfInterest || !$scope.pointOfInterest.name) return;
+	  
 	  myLocation = $scope.pointOfInterest.geometry.location;
       $scope.pointOfInterest.title = $scope.pointOfInterest.name;
       $scope.pointOfInterest.location = {latitude:myLocation.A,longitude:myLocation.F};
@@ -412,6 +413,9 @@ app.controller('destinationCtrl', [
 	  }
 	}
 
+	$scope.showPointOfInterest=function(point){
+		$scope.pointOfInterestToShow=point;
+	}
   }
 ]);
 

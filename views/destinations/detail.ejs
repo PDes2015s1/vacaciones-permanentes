@@ -26,6 +26,10 @@
           class="btn btn-danger pull-right" data-toggle="modal" data-target="#myModalD">
         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
         </button>
+        <button type="button" ng-click="showPointOfInterest(pointOfInterest)" 
+          class="btn btn-info pull-right" data-toggle="modal" data-target="#modalDetailPoint">
+        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+        </button>
       </div>
       <form ng-submit="addPointOfInterest()"
         ng-show="isLoggedIn()"
@@ -74,6 +78,25 @@
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button ng-click="removePoint()" type="button" class="btn btn-danger" 
           data-dismiss="modal">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal detail point-->
+<div class="modal fade" id="modalDetailPoint" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">{{pointOfInterestToShow.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p><b>Dirección:</b> {{pointOfInterestToShow.formatted_address}}</p>
+		<p><b>Teléfono:</b> {{pointOfInterestToShow.formatted_phone_number}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
