@@ -174,6 +174,13 @@ router.post('/destinations/:destination/pointsOfInterest', auth, function(req, r
   });
 });
 
+router.delete('/destinations/:destination/:pointOfInterest', auth, function(req, res, next) {
+  req.pointOfInterest.remove(function(err) {
+    if (err) throw err;
+    res.json();
+  });
+});
+
 // templates
 
 var myRender = function(view) {
@@ -215,5 +222,6 @@ var params = function(model, field) {
 
 router.param('travel', params(Travel, 'travel'));
 router.param('destination', params(Destination, 'destination'));
+router.param('pointOfInterest', params(PointOfInterest, 'pointOfInterest'));
 
 module.exports = router;

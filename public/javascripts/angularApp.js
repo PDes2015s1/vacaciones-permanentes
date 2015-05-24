@@ -140,6 +140,10 @@ app.factory('destinations', ['$http', 'auth', function($http, auth) {
     },
     addPointOfInterest: function(idDestintation, pointOfInterest) {
       return $http.post('/destinations/' + idDestintation + '/pointsOfInterest', pointOfInterest, headers());
+    },
+    removePoint: function(destination, point) {
+      return $http.delete('/destinations/' + destination._id + '/' + point._id + '/',
+        headers());
     }
   }
   return o;
@@ -388,6 +392,17 @@ app.controller('destinationCtrl', [
         $scope.pointOfInterest = null;
       });
     }
+	
+    $scope.setPointToRemove = function(point) {
+      $scope.pointToRemove = point;
+    }
+	
+    $scope.removePoint = function() {
+      destinations.removePoint(destination, $scope.pointToRemove).success(function(data) {
+        var index = destination.pointsOfInterest.indexOf($scope.pointToRemove);
+        destination.pointsOfInterest.splice(index, 1);
+      });
+    };
 	
 	$scope.centerMap=function(){
 	  for(n=0;n < destination.pointsOfInterest.length;n++){
