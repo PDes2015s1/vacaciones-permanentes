@@ -45,7 +45,8 @@ router.post('/travels', auth, function(req, res, next) {
 });
 
 var checkPermission = function(req, res, next) {
-  if (req.travel.user != req.payload._id)
+  if ((req.travel && req.travel.user != req.payload._id)
+    || (req.destination && req.destination.user != req.payload._id))
     return res.status(401).json({
       message: 'Usuario no autorizado'
     });
@@ -81,7 +82,7 @@ router.get('/travels/:travel', auth, checkPermission, function(req, res, next) {
 router.post('/travels/:travel/destinations', auth, checkPermission, function(req, res, next) {
   var destination = new Destination(req.body);
   destination.travel = req.travel;
-
+  destination.user = req.payload._id;
   destination.save(function(err, destination) {
     if (err) {
       return next(err);
@@ -144,8 +145,8 @@ router.post('/login', function(req, res, next) {
   })(req, res, next);
 });
 
-router.get('/destinations/:destination', auth, function(req, res, next) {
-  req.destination.populate(['pointsOfInterest','lodging'], function(err, destination) {
+router.get('/destinations/:destination', auth, checkPermission, function(req, res, next) {
+  req.destination.populate(['pointsOfInterest', 'lodging'], function(err, destination) {
     if (err) {
       return next(err);
     }
@@ -154,7 +155,7 @@ router.get('/destinations/:destination', auth, function(req, res, next) {
   });
 });
 
-router.post('/destinations/:destination/pointsOfInterest', auth, function(req, res, next) {
+router.post('/destinations/:destination/pointsOfInterest', auth, checkPermission, function(req, res, next) {
   var pointOfInterest = new PointOfInterest(req.body);
   pointOfInterest.destination = req.destination;
 
@@ -162,7 +163,7 @@ router.post('/destinations/:destination/pointsOfInterest', auth, function(req, r
     if (err) {
       return next(err);
     }
-	
+
     req.destination.pointsOfInterest.push(pointOfInterest);
     req.destination.save(function(err, destination) {
       if (err) {
@@ -174,14 +175,14 @@ router.post('/destinations/:destination/pointsOfInterest', auth, function(req, r
   });
 });
 
-router.post('/destinations/:destination/lodging', auth, function(req, res, next) {
+router.post('/destinations/:destination/lodging', auth, checkPermission, function(req, res, next) {
   var pointOfInterest = new PointOfInterest(req.body);
 
   pointOfInterest.save(function(err, pointOfInterest) {
     if (err) {
       return next(err);
     }
-	
+
     req.destination.lodging = pointOfInterest;
     req.destination.save(function(err, destination) {
       if (err) {
@@ -193,7 +194,7 @@ router.post('/destinations/:destination/lodging', auth, function(req, res, next)
   });
 });
 
-router.delete('/destinations/:destination/:pointOfInterest', auth, function(req, res, next) {
+router.delete('/destinations/:destination/:pointOfInterest', auth, checkPermission, function(req, res, next) {
   req.pointOfInterest.remove(function(err) {
     if (err) throw err;
     res.json();

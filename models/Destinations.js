@@ -24,7 +24,11 @@ var DestinationSchema = new mongoose.Schema({
   pointsOfInterest: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'PointOfInterest'
-  }]
+  }],
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
 });
 
 mongoose.model('Destination', DestinationSchema);
