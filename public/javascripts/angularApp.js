@@ -137,6 +137,9 @@ app.factory('destinations', ['$http', 'auth', function($http, auth) {
       return $http.get('/destinations/' + id, headers()).then(function(res) {
         return res.data;
       });
+    },
+    addPointOfInterest: function(idDestintation, pointOfInterest) {
+      return $http.post('/destinations/' + idDestintation + '/pointsOfInterest', pointOfInterest, headers());
     }
   }
   return o;
@@ -344,9 +347,10 @@ app.controller('TravelCtrl', [
 
 app.controller('destinationCtrl', [
   '$scope',
+  'destinations',
   'destination',
   'auth',
-  function($scope, destination, auth) {
+  function($scope, destinations, destination, auth) {
     $scope.isLoggedIn = auth.isLoggedIn;
     $scope.destination = destination;
     $scope.pointOptions = {
@@ -363,25 +367,36 @@ app.controller('destinationCtrl', [
     $scope.options = {
       scrollwheel: false
     };
+
     $scope.markers = [];
     //Para centrar el mapa correctamente
     var bounds = new google.maps.LatLngBounds();
 
     $scope.addPointOfInterest = function() {
       if (!$scope.pointOfInterest || !$scope.pointOfInterest.name) return;
-      myLocation = $scope.pointOfInterest.geometry.location;
-      $scope.markers.push({
-        coords: {
-          latitude: myLocation.A,
-          longitude: myLocation.F
-        },
-        'id': 'someKey-' + myLocation.A + '' + myLocation.F
+	  myLocation = $scope.pointOfInterest.geometry.location;
+      $scope.pointOfInterest.title = $scope.pointOfInterest.name;
+      $scope.pointOfInterest.location = {latitude:myLocation.A,longitude:myLocation.F};
+      destinations.addPointOfInterest(destination._id, $scope.pointOfInterest).success(function(pointOfInterest) {
+  
+        //centrando mapa
+        var latlng = new google.maps.LatLng(myLocation.A, myLocation.F);
+        bounds.extend(latlng);
+        $scope.map.googleMap.getGMap().fitBounds(bounds);
+	  
+        $scope.destination.pointsOfInterest.push(pointOfInterest);
+        $scope.pointOfInterest = null;
       });
-      //centrando mapa
-      var latlng = new google.maps.LatLng(myLocation.A, myLocation.F);
-      bounds.extend(latlng);
-      $scope.map.googleMap.getGMap().fitBounds(bounds);
     }
+	
+	$scope.centerMap=function(){
+	  for(n=0;n < destination.pointsOfInterest.length;n++){
+		var latlng = new google.maps.LatLng(destination.pointsOfInterest[n].location.latitude, destination.pointsOfInterest[n].longitude);
+        bounds.extend(latlng);
+        $scope.map.googleMap.getGMap().fitBounds(bounds);
+	  }
+	}
+
   }
 ]);
 

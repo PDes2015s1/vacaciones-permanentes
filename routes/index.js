@@ -3,6 +3,7 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var Travel = mongoose.model('Travel');
 var Destination = mongoose.model('Destination');
+var PointOfInterest = mongoose.model('PointOfInterest');
 var User = mongoose.model('User');
 var passport = require('passport');
 var jwt = require('express-jwt');
@@ -144,12 +145,32 @@ router.post('/login', function(req, res, next) {
 });
 
 router.get('/destinations/:destination', auth, function(req, res, next) {
-  req.destination.populate('pointsofinterest', function(err, destination) {
+  req.destination.populate('pointsOfInterest', function(err, destination) {
     if (err) {
       return next(err);
     }
 
     res.json(destination);
+  });
+});
+
+router.post('/destinations/:destination/pointsOfInterest', auth, function(req, res, next) {
+  var pointOfInterest = new PointOfInterest(req.body);
+  pointOfInterest.destination = req.destination;
+  console.log(req.body)
+  pointOfInterest.save(function(err, pointOfInterest) {
+    if (err) {
+      return next(err);
+    }
+	
+    req.destination.pointsOfInterest.push(pointOfInterest);
+    req.destination.save(function(err, travel) {
+      if (err) {
+        return next(err);
+      }
+
+      res.json(pointOfInterest);
+    });
   });
 });
 
