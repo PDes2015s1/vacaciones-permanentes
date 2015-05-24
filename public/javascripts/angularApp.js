@@ -429,6 +429,9 @@ app.controller('destinationCtrl', [
       bounds.extend(latlng);
       $scope.map.googleMap.getGMap().fitBounds(bounds);
 	}
+	$scope.removeLodging=function(){
+		$scope.destination.lodging=null;
+	}
   }
 ]);
 

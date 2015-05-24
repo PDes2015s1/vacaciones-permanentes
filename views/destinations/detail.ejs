@@ -28,13 +28,18 @@
                 options="pointOptions"
                 ng-model="lodging"></input>
             </div>
-            <button type="submit" class="btn btn-primary">Crear</button>
+            <button type="submit" class="btn btn-primary">Agregar</button>
           </form>
 		</div>
 	    <div ng-show="destination.lodging">
-          <p><b>Título:</b> {{destination.lodging.title}}</p>
-          <p><b>Dirección:</b> {{destination.lodging.formatted_address}}</p>
-		  <p><b>Teléfono:</b> {{destination.lodging.formatted_phone_number}}</p>
+          <button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#modalRemoveLodging">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+          </button>
+		  <div>
+            <p><b>Lugar:</b> {{destination.lodging.title}}</p>
+            <p><b>Dirección:</b> {{destination.lodging.formatted_address}}</p>
+		    <p><b>Teléfono:</b> {{destination.lodging.formatted_phone_number}}</p>
+		  </div>
 		</div>
 	  </td>
     </tr>
@@ -124,6 +129,26 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal remove lodging-->
+<div class="modal fade" id="modalRemoveLodging" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Advertencia</h4>
+      </div>
+      <div class="modal-body">
+        ¿Estas seguro que deseas eliminar el hospedaje?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button ng-click="removeLodging()" type="button" class="btn btn-danger" 
+          data-dismiss="modal">Eliminar</button>
       </div>
     </div>
   </div>
