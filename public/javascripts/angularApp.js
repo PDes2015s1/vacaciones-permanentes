@@ -381,71 +381,80 @@ app.controller('destinationCtrl', [
 
     $scope.addPointOfInterest = function() {
       if (!$scope.pointOfInterest || !$scope.pointOfInterest.name) return;
-	  
-	  //alert(JSON.stringify($scope.pointOfInterest.formatted_address))
-	  //alert(JSON.stringify($scope.pointOfInterest.formatted_phone_number))
-	  //alert(JSON.stringify($scope.pointOfInterest))
-	  
-	  myLocation = $scope.pointOfInterest.geometry.location;
+
+      myLocation = $scope.pointOfInterest.geometry.location;
       $scope.pointOfInterest.title = $scope.pointOfInterest.name;
-      $scope.pointOfInterest.location = {latitude:myLocation.A,longitude:myLocation.F};
+      $scope.pointOfInterest.location = {
+        latitude: myLocation.A,
+        longitude: myLocation.F
+      };
       destinations.addPointOfInterest(destination._id, $scope.pointOfInterest).success(function(pointOfInterest) {
-  
+
         //centrando mapa
         var latlng = new google.maps.LatLng(myLocation.A, myLocation.F);
         bounds.extend(latlng);
         $scope.map.googleMap.getGMap().fitBounds(bounds);
-	  
+
         $scope.destination.pointsOfInterest.push(pointOfInterest);
         $scope.pointOfInterest = null;
       });
     }
-	
+
     $scope.setPointToRemove = function(point) {
       $scope.pointToRemove = point;
     }
-	
+
     $scope.removePoint = function() {
       destinations.removePoint(destination, $scope.pointToRemove).success(function(data) {
         var index = destination.pointsOfInterest.indexOf($scope.pointToRemove);
         destination.pointsOfInterest.splice(index, 1);
       });
     };
-	
-	$scope.centerMap=function(){
-	  for(n=0;n < destination.pointsOfInterest.length;n++){
-		var latlng = new google.maps.LatLng(destination.pointsOfInterest[n].location.latitude, destination.pointsOfInterest[n].longitude);
+
+    $scope.centerMap = function() {
+      for (n = 0; n < destination.pointsOfInterest.length; n++) {
+        var latlng = new google.maps.LatLng(destination.pointsOfInterest[n].location.latitude, destination.pointsOfInterest[n].longitude);
         bounds.extend(latlng);
         $scope.map.googleMap.getGMap().fitBounds(bounds);
-	  }
-	}
+      }
+    }
 
-	$scope.showPointOfInterest=function(point){
-		$scope.pointOfInterestToShow=point;
-	}
-	$scope.addLodging=function(){
-      if(!isLodging()){alert("Hospedaje inválido");return;}
-	  if (!$scope.lodging || !$scope.lodging.name) return;
+    $scope.showPointOfInterest = function(point) {
+      $scope.pointOfInterestToShow = point;
+    }
+    $scope.addLodging = function() {
+      if (!$scope.lodging || !$scope.lodging.name) return;
+
+      if (!isLodging()) {
+        alert("Hospedaje inválido");
+        $scope.lodging = null;
+        return;
+      }
+
       myLocation = $scope.lodging.geometry.location;
       $scope.lodging.title = $scope.lodging.name;
-      $scope.lodging.location = {latitude:myLocation.A,longitude:myLocation.F};
-	  destinations.addLodging(destination._id, $scope.lodging).success(function(lodging) {
-        $scope.destination.lodging=lodging;
+      $scope.lodging.location = {
+        latitude: myLocation.A,
+        longitude: myLocation.F
+      };
+
+      destinations.addLodging(destination._id, $scope.lodging).success(function(lodging) {
+        $scope.destination.lodging = lodging;
         var latlng = new google.maps.LatLng(myLocation.A, myLocation.F);
         bounds.extend(latlng);
         $scope.map.googleMap.getGMap().fitBounds(bounds);
-	  });
-	}
-	$scope.removeLodging=function(){
-	  destinations.removePoint(destination, $scope.destination.lodging).success(function(data) {
-        $scope.destination.lodging=null;
-		$scope.lodging=null;
       });
-	}
-	
-	function isLodging(){
-		return $scope.lodging.types.indexOf("lodging") != -1;
-	}
+    }
+    $scope.removeLodging = function() {
+      destinations.removePoint(destination, $scope.destination.lodging).success(function(data) {
+        $scope.destination.lodging = null;
+        $scope.lodging = null;
+      });
+    }
+
+    function isLodging() {
+      return $scope.lodging.types.indexOf("lodging") != -1;
+    }
   }
 ]);
 

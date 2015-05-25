@@ -81,11 +81,11 @@
       <ui-gmap-google-map center="map.center" zoom="map.zoom" options="options" pan='true' control="map.googleMap">
         <div ng-repeat="pointOfInterest in destination.pointsOfInterest" >
           <ui-gmap-marker coords="pointOfInterest.location" options="pointOfInterest.options"
-              events="pointOfInterest.events" idkey="$index">
+              events="pointOfInterest.events" idkey="$index" icon='{url: "images/neutral.png"}'>
               </ui-gmap-marker> 
         </div>
         <ui-gmap-marker coords="destination.lodging.location" options="destination.lodging.options"
-            events="destination.lodging.events" idkey="-1">
+            events="destination.lodging.events" idkey="-1" icon='{url: "images/hotel_0star.png"}'>
         </ui-gmap-marker> 
       </ui-gmap-google-map>
     </div>
