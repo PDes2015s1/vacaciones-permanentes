@@ -424,6 +424,7 @@ app.controller('destinationCtrl', [
 		$scope.pointOfInterestToShow=point;
 	}
 	$scope.addLodging=function(){
+      if(!isLodging()){alert("Hospedaje inválido");return;}
 	  if (!$scope.lodging || !$scope.lodging.name) return;
       myLocation = $scope.lodging.geometry.location;
       $scope.lodging.title = $scope.lodging.name;
@@ -440,6 +441,10 @@ app.controller('destinationCtrl', [
         $scope.destination.lodging=null;
 		$scope.lodging=null;
       });
+	}
+	
+	function isLodging(){
+		return $scope.lodging.types.indexOf("lodging") != -1;
 	}
   }
 ]);
