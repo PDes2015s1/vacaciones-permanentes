@@ -1,7 +1,7 @@
 <style>.angular-google-map-container { height: 400px; }</style>
 <div class="page-header" ng-show="isLoggedIn()" >
   <h1>
-    {{travel.title}}
+    Viaje {{travel.title}}
     <span style="font-size:15px;" class="pull-right" am-time-ago="travel.created_at">
     </span>
   </h1>
@@ -26,6 +26,9 @@
           class="btn btn-danger pull-right" data-toggle="modal" data-target="#myModalD">
         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
         </button>
+        <a href="#/destination/{{destination._id}}" class="btn btn-info pull-right">
+        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+        </a>
       </div>
       <form ng-submit="addDestination()"
         ng-show="isLoggedIn()"
