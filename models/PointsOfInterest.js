@@ -5,6 +5,8 @@ var PointOfInterestSchema = new mongoose.Schema({
   formatted_address: String,
   formatted_phone_number: String,
   location: {},
+  reviews: [],
+  rating: Number,
   created_at: {
     type: Date,
     default: new Date()
