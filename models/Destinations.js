@@ -13,9 +13,21 @@ var DestinationSchema = new mongoose.Schema({
     type: Date,
     default: new Date()
   },
+  lodging: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'PointOfInterest'
+  },
   travel: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Travel'
+  },
+  pointsOfInterest: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'PointOfInterest'
+  }],
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   }
 });
 
