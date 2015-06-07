@@ -9,9 +9,18 @@ module.exports = function(grunt) {
       options: {
         devDependencies: true
       }
+    },
+	
+    karma: {
+      unit: {
+        configFile: 'karma.config.js'
+      }
     }
 
   });
-
+  
+  grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-wiredep');
+  
+  grunt.registerTask('test', ['karma']);
 };
