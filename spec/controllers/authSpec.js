@@ -3,6 +3,10 @@
 describe("AuthCtrl", function() {
 
   var scope, controller, httpBackend;
+  var mockUser = {
+    username: 'javier',
+    password: '1234'
+  };
 
   beforeEach(function() {
     module('vacaciones-permanentes')
@@ -39,13 +43,9 @@ describe("AuthCtrl", function() {
 
   it("Login usuario incorrecto", function() {
     var msg = "El usuario es incorrecto";
-    httpBackend.expectPOST('/login', {
-        username: 'javier',
-        password: '1234'
-      })
+    httpBackend.expectPOST('/login', mockUser)
       .respond(401, msg);
-    scope.user.username = 'javier';
-    scope.user.password = '1234';
+    scope.user = mockUser;
     scope.logIn();
     httpBackend.flush();
     expect(scope.error).toBe(msg);
@@ -53,15 +53,11 @@ describe("AuthCtrl", function() {
 
   it("Usuario registrado correctamente", function() {
     var msg;
-    httpBackend.expectPOST('/register', {
-        username: 'javier',
-        password: '1234'
-      })
+    httpBackend.expectPOST('/register', mockUser)
       .respond({
         toke: 'XXXX'
       });
-    scope.user.username = 'javier';
-    scope.user.password = '1234';
+    scope.user = mockUser;
     scope.register();
     httpBackend.flush();
     expect(scope.error).toBe(msg);
@@ -69,15 +65,11 @@ describe("AuthCtrl", function() {
 
   it("Login correcto", function() {
     var msg;
-    httpBackend.expectPOST('/login', {
-        username: 'javier',
-        password: '1234'
-      })
+    httpBackend.expectPOST('/login', mockUser)
       .respond({
         toke: 'XXXX'
       });
-    scope.user.username = 'javier';
-    scope.user.password = '1234';
+    scope.user = mockUser;
     scope.logIn();
     httpBackend.flush();
     expect(scope.error).toBe(msg);
