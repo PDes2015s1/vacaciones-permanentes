@@ -10,10 +10,6 @@ describe("AuthCtrl", function() {
 
   beforeEach(inject(function($controller, $rootScope, $injector) {
     httpBackend = $injector.get('$httpBackend');
-    httpBackend.when('POST', '/register')
-      .respond({
-        toke: 'XXXX'
-      });
 
     httpBackend.when('GET', '/view/home')
       .respond({});
