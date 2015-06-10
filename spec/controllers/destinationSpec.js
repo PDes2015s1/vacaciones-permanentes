@@ -2,13 +2,7 @@
 
 describe("DestinationCtrl", function() {
 
-  var scope, controller, httpBackend;
-  var mockDestination = {
-    _id: 1,
-    title: 'Destination',
-    user: 1,
-    pointsOfInterest: []
-  };
+  var scope, controller, httpBackend, mockDestination;
   var mockGoogleMap = {
     getGMap: function() {
       return {
@@ -18,6 +12,7 @@ describe("DestinationCtrl", function() {
   };
 
   var mockPoint = {
+    _id: 1,
     name: 'Punto de interes',
     geometry: {
       location: {
@@ -33,6 +28,13 @@ describe("DestinationCtrl", function() {
 
   beforeEach(inject(function($controller, $rootScope, $injector) {
     httpBackend = $injector.get('$httpBackend');
+
+    mockDestination = {
+      _id: 1,
+      title: 'Destination',
+      user: 1,
+      pointsOfInterest: []
+    };
 
     scope = $rootScope.$new();
     controller = $controller('destinationCtrl', {
@@ -56,14 +58,37 @@ describe("DestinationCtrl", function() {
   });
 
   it("Agregando punto de interes correctamente", function() {
+    addMockPoint();
+    expect(scope.destination.pointsOfInterest.length).toEqual(1);
+    expect(scope.destination.pointsOfInterest[0]).toEqual(mockPoint);
+  });
+
+  it("El nombre de punto de interes es obligatorio para crearlo", function() {
+    scope.map.googleMap = mockGoogleMap;
+    scope.pointOfInterest = {};
+    scope.addPointOfInterest();
+    expect(scope.destination.pointsOfInterest.length).toEqual(0);
+  });
+
+  it("Eliminando punto de interes correctamente", function() {
+    addMockPoint();
+
+    httpBackend.expectDELETE('/destinations/' + mockDestination._id + '/' + mockPoint._id + '/')
+      .respond(mockPoint);
+    scope.pointToRemove = mockPoint;
+    scope.removePoint();
+    httpBackend.flush();
+
+    expect(scope.destination.pointsOfInterest.length).toEqual(0);
+  });
+
+  function addMockPoint() {
     scope.map.googleMap = mockGoogleMap;
     httpBackend.expectPOST('/destinations/' + mockDestination._id + '/pointsOfInterest', mockPoint)
       .respond(mockPoint);
     scope.pointOfInterest = mockPoint;
     scope.addPointOfInterest();
     httpBackend.flush();
-    expect(scope.destination.pointsOfInterest.length).toEqual(1);
-    expect(scope.destination.pointsOfInterest[0]).toEqual(mockPoint);
-  });
+  }
 
 });
