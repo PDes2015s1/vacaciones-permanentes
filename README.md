@@ -18,7 +18,8 @@ Correr los tests Protractor
       npm install -g protractor
       webdriver-manager update
       webdriver-manager start
-      protractor conf.js
+      npm start &
+      protractor protractor.config.js
 
 Correr los tests Jasmine
 
