@@ -33,7 +33,7 @@ module.exports = function(config) {
       'https://maps.googleapis.com/maps/api/js?libraries=places',
       'bower_components/angular-google-places-autocomplete/src/autocomplete.js',
       'public/javascripts/angular/**/*.js',
-      'spec/**/*Spec.js'
+      'tests/jasmine/**/*Spec.js'
     ],
 
 

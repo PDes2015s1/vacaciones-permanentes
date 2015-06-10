@@ -23,10 +23,11 @@
   },
   "devDependencies": {
     "grunt": "^0.4.5",
+    "grunt-karma": "~0.10.1",
     "grunt-wiredep": "~2.0.0",
-	"karma": "~0.12.31",
+    "karma": "~0.12.31",
     "karma-jasmine": "~0.3.5",
     "karma-phantomjs-launcher": "~0.1.4",
-	"grunt-karma": "~0.10.1"
+    "protractor": "^2.1.0"
   }
 }
