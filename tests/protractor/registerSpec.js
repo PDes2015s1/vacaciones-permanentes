@@ -1,8 +1,8 @@
+var utils = require('./utils');
 describe('Registro', function() {
 
   beforeEach(function() {
-    browser.executeScript('window.sessionStorage.clear();');
-    browser.executeScript('window.localStorage.clear();');
+    utils.clearAll();
   });
 
   it('Se deberia registrar correctamente', function() {

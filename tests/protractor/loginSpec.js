@@ -2,8 +2,7 @@ var utils = require('./utils');
 describe('Login', function() {
 
   beforeEach(function() {
-    browser.executeScript('window.sessionStorage.clear();');
-    browser.executeScript('window.localStorage.clear();');
+    utils.clearAll();
   });
 
   it('No se deberia loguearse si el usuario no existe', function() {
