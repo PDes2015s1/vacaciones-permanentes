@@ -19,5 +19,13 @@ describe('Travels', function() {
     expect(travels.count()).toEqual(1);
     expect(travels.first().getText()).toContain('Europa');
   });
+  
+  it('No deberia crear un travel sin completar los campos', function() {
+    browser.get('http://localhost:3000/#/travels');
+
+    element(by.id('createbtn')).click();
+    travels = element.all(by.repeater('travel in travels'));
+    expect(travels.count()).toEqual(0);
+  });
 
 });
