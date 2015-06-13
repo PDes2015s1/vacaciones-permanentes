@@ -101,7 +101,7 @@ if (app.get('env') === 'development') {
 
 if (app.get('env') === 'development') {
   /* Connect to the DB */
-  mongoose.connect('mongodb://localhost/mydatabase', function() {
+  mongoose.connect('mongodb://localhost/travelstest', function() {
     /* Drop the DB */
     mongoose.connection.db.dropDatabase();
   });
