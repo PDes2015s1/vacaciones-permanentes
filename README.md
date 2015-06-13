@@ -11,14 +11,14 @@ UNQ - 2015s1
 
 Iniciar servidor
 
-      npm start
+      npm start o en modo desarrollo NODE_ENV=development npm start
 
 Correr los tests Protractor
 
       npm install -g protractor
       webdriver-manager update
       webdriver-manager start
-      npm start &
+      NODE_ENV=development	npm start &
       protractor protractor.config.js
 
 Correr los tests Jasmine

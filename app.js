@@ -12,7 +12,7 @@ require('./models/PointsOfInterest');
 require('./models/Destinations');
 require('./config/passport');
 
-mongoose.connect('mongodb://localhost/travels');
+//mongoose.connect('mongodb://localhost/travels');
 
 //Functions Globals
 
@@ -97,6 +97,16 @@ if (app.get('env') === 'development') {
       error: err
     });
   });
+}
+
+if (app.get('env') === 'development') {
+  /* Connect to the DB */
+  mongoose.connect('mongodb://localhost/mydatabase', function() {
+    /* Drop the DB */
+    mongoose.connection.db.dropDatabase();
+  });
+} else {
+  mongoose.connect('mongodb://localhost/travels');
 }
 
 // production error handler
