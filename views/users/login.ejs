@@ -1,4 +1,4 @@
-<div ng-show="error" class="alert alert-danger row">
+<div ng-show="error" id="message" class="alert alert-danger row">
   <span>{{ error.message }}</span>
 </div>
 <form ng-submit="logIn()"
@@ -16,5 +16,5 @@
       placeholder="Password"
       ng-model="user.password"></input>
   </div>
-  <button type="submit" class="btn btn-primary">Log In</button>
+  <button type="submit" id="loginbtn" class="btn btn-primary">Log In</button>
 </form>

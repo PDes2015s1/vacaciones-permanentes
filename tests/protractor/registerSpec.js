@@ -1,4 +1,4 @@
-describe('Protractor Demo App', function() {
+describe('Registro', function() {
 
   beforeEach(function() {
     browser.executeScript('window.sessionStorage.clear();');
