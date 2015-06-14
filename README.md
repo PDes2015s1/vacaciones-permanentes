@@ -17,8 +17,7 @@ Correr los tests Protractor
 
       npm install -g protractor
       webdriver-manager update
-      webdriver-manager start
-      NODE_ENV=development	npm start &
+      NODE_ENV=development npm start &
       protractor protractor.config.js
 
 Correr los tests Jasmine
