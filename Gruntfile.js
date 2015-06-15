@@ -24,6 +24,16 @@ module.exports = function(grunt) {
         'public/javascripts/angular/**/*.js',
         '*.js'
       ]
+    },
+
+    nodeunit: {
+      all: ['tests/nodeunit/**/*Test.js'],
+      options: {
+        reporter: 'junit',
+        reporterOptions: {
+          output: 'outputdir'
+        }
+      }
     }
 
   });
@@ -31,6 +41,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-wiredep');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
   grunt.registerTask('jasmine', ['karma']);
   grunt.registerTask('default', 'jshint');
