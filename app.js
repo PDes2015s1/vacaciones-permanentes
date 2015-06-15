@@ -30,13 +30,13 @@ var setParam = function(req, res, next, id, model, field) {
     req[field] = value;
     return next();
   });
-}
+};
 
 global.params = function(model, field) {
   return function(req, res, next, id) {
     setParam(req, res, next, id, model, field);
   };
-}
+};
 
 global.checkPermission = function(req, res, next) {
   if ((req.travel && req.travel.user != req.payload._id) || (req.destination && req.destination.user != req.payload._id))
@@ -46,7 +46,7 @@ global.checkPermission = function(req, res, next) {
   else {
     return next();
   }
-}
+};
 
 //End Functions Globals
 
@@ -126,14 +126,14 @@ var myRender = function(view) {
     res.render(view, {
       title: 'Vacacioner permanentes'
     });
-  }
-}
+  };
+};
 
-routes.get('/view/home', myRender('home'))
-routes.get('/view/travels/all', myRender('travels/all'))
-routes.get('/view/travels/detail', myRender('travels/detail'))
-routes.get('/view/login', myRender('users/login'))
-routes.get('/view/register', myRender('users/register'))
-routes.get('/view/destinations/detail', myRender('destinations/detail'))
+routes.get('/view/home', myRender('home'));
+routes.get('/view/travels/all', myRender('travels/all'));
+routes.get('/view/travels/detail', myRender('travels/detail'));
+routes.get('/view/login', myRender('users/login'));
+routes.get('/view/register', myRender('users/register'));
+routes.get('/view/destinations/detail', myRender('destinations/detail'));
 
 module.exports = app;

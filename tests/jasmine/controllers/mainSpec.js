@@ -10,7 +10,7 @@ describe("MainCtrl", function() {
   };
 
   beforeEach(function() {
-    module('vacaciones-permanentes')
+    module('vacaciones-permanentes');
   });
 
   beforeEach(inject(function($controller, $rootScope, $injector) {

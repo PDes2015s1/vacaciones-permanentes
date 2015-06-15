@@ -10,23 +10,23 @@ module.exports = function(grunt) {
         devDependencies: true
       }
     },
-	
+
     karma: {
       unit: {
         configFile: 'karma.config.js'
       }
     },
-	
+
     jshint: {
-      all: ['Gruntfile.js']
+      all: ['Gruntfile.js', 'models/*.js', 'routes/**/*.js', 'public/javascripts/angular/**/*.js', '*.js']
     }
 
   });
-  
+
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-wiredep');
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  
-  grunt.registerTask('test', ['karma']);
+
+  grunt.registerTask('jasmine', ['karma']);
   grunt.registerTask('default', 'jshint');
 };

@@ -31,7 +31,7 @@ router.post('/register', function(req, res, next) {
 
   user.username = req.body.username;
 
-  user.setPassword(req.body.password)
+  user.setPassword(req.body.password);
 
   user.save(function(err) {
     if (err) {
@@ -40,7 +40,7 @@ router.post('/register', function(req, res, next) {
 
     return res.json({
       token: user.generateJWT()
-    })
+    });
   });
 });
 

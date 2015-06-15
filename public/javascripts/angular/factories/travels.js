@@ -4,14 +4,14 @@ app.factory('travels', ['$http', 'auth', function($http, auth) {
       headers: {
         Authorization: 'Bearer ' + auth.getToken()
       }
-    }
+    };
   };
   var o = {
     travels: [],
     getAll: function() {
       return $http.get('/travels', headers()).success(function(data) {
         angular.copy(data, o.travels);
-      })
+      });
     },
     create: function(travel) {
       return $http.post('/travels', travel, headers()).success(function(data) {
