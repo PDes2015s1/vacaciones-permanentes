@@ -57,7 +57,7 @@ module.exports.createPoint = function(req, res, next) {
   });
 };
 
-module.exports.getLodging = function(req, res, next) {
+module.exports.createLodging = function(req, res, next) {
   var pointOfInterest = new PointOfInterest(req.body);
 
   pointOfInterest.save(function(err, pointOfInterest) {
