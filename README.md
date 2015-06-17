@@ -20,9 +20,13 @@ Correr los tests Protractor
       NODE_ENV=development npm start &
       protractor protractor.config.js
 
+Correr los tests Nodeunit
+
+      NODE_ENV=development grunt nodeunit
+
 Correr los tests Jasmine
 
-      grunt karma
+      grunt jasmine
 	  
 Inyectar dependenciar con wiredep
 
