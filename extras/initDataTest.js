@@ -11,6 +11,7 @@ var mockRes = {}
 var nextMockParam = function(err) {
   console.log(err)
 };
+var info = {};
 
 module.exports = function insert(callback) {
   mongoose.connect('mongodb://localhost/travelstest', function() {
@@ -24,24 +25,55 @@ module.exports = function insert(callback) {
       if (err) {
         return next(err);
       }
-      var travel = new Travel({
+      mockReq.payload._id = user._id;
+      info.user = user;
+
+      createTravel({
         title: 'America',
         startDate: new Date(2015, 6, 1),
-        endDate: new Date(2015, 6, 15)
-      });
-      travel.user = user._id;
-      travel.save(function(err, travel) {
-        if (err) {
-          return next(err);
-        }
+        endDate: new Date(2015, 6, 15),
+        user: user._id
+      }, function() {
+        createDestination({
+          title: 'Belgica',
+          start: new Date(2015, 6, 4),
+          end: new Date(2015, 6, 10),
+          user: user._id,
+          travel: info.travel
+        }, function() {
+          callback(mockReq, mockRes, nextMockParam, info);
+        })
+      })
+    });
+  });
+}
 
-        mockReq.payload._id = user._id;
-        callback(mockReq, mockRes, nextMockParam, {
-          user: user,
-          travel: travel
-        });
-      });
+function createTravel(data, callback) {
+  var travel = new Travel(data);
+  travel.save(function(err, newTravel) {
+    if (err) {
+      return next(err);
+    }
+    info.travel = newTravel;
+    callback();
+  });
+}
 
+function createDestination(data, callback) {
+  var destination = new Destination(info);
+  destination.save(function(err, newDestination) {
+    if (err) {
+      return next(err);
+    }
+
+    info.travel.destinations.push(newDestination);
+    info.travel.save(function(err, travel) {
+      if (err) {
+        return next(err);
+      }
+
+      info.destination = newDestination;
+      callback();
     });
   });
 }

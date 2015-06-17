@@ -30,7 +30,7 @@ module.exports.create = function(req, res, next) {
 
     res.json(travel);
   });
-}
+};
 
 module.exports.remove = function(req, res, next) {
   req.travel.remove(function(err) {
