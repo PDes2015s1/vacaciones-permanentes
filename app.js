@@ -80,7 +80,7 @@ router.param('travel', params(Travel, 'travel'));
 router.post('/travels/:travel/destinations', auth, checkPermission, destinations.create);
 router.get('/destinations/:destination', auth, checkPermission, destinations.get);
 router.post('/destinations/:destination/pointsOfInterest', auth, checkPermission, destinations.createPoint);
-router.post('/destinations/:destination/lodging', auth, checkPermission, destinations.getLodging);
+router.post('/destinations/:destination/lodging', auth, checkPermission, destinations.createLodging);
 router.delete('/destinations/:destination/:pointOfInterest', auth, checkPermission, destinations.removePoint);
 router.delete('/travels/:travel/:destination/dest', auth, checkPermission, destinations.remove);
 

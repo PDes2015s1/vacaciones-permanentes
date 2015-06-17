@@ -31,10 +31,10 @@ exports.testCrearNuevoViaje = function(test) {
     endDate: new Date(2015, 6, 15)
   }
   routes.create(mockReq, {
-    json: function(result) {
-      test.equal(result.title, mockReq.body.title, 'El titulo del viaje creado no es el correcto');
-      test.equal(result.startDate, mockReq.body.startDate, 'La fecha de omienzo del viaje creado no es la correcta');
-      test.equal(result.endDate, mockReq.body.endDate, 'La fecha fin del viaje creado no es la correcta');
+    json: function(travel) {
+      test.equal(travel.title, mockReq.body.title, 'El titulo del viaje creado no es el correcto');
+      test.equal(travel.startDate, mockReq.body.startDate, 'La fecha de omienzo del viaje creado no es la correcta');
+      test.equal(travel.endDate, mockReq.body.endDate, 'La fecha fin del viaje creado no es la correcta');
       test.done();
     }
   }, nextMock);
