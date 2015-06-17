@@ -6,12 +6,14 @@ var mongoose = require('mongoose');
 var mockReq;
 var mockRes;
 var nextMock;
+var info;
 
 exports.setUp = function(callback) {
-  data(function(mockReqParam, mockResParam, nextMockParam, data) {
+  data(function(mockReqParam, mockResParam, nextMockParam, infoParam) {
     mockReq = mockReqParam;
     mockRes = mockResParam;
     nextMock = nextMockParam;
+    info = infoParam;
     callback();
   })
 };
@@ -21,15 +23,6 @@ exports.tearDown = function(callback) {
     callback();
   });
 }
-
-exports.testUsuarioSinViajesCreados = function(test) {
-  routes.all(mockReq, {
-    json: function(result) {
-      test.equal(result.length, 0, 'El usuario tiene vieajes creados');
-      test.done();
-    }
-  }, nextMock);
-};
 
 exports.testCrearNuevoViaje = function(test) {
   mockReq.body = {
@@ -42,6 +35,25 @@ exports.testCrearNuevoViaje = function(test) {
       test.equal(result.title, mockReq.body.title, 'El titulo del viaje creado no es el correcto');
       test.equal(result.startDate, mockReq.body.startDate, 'La fecha de omienzo del viaje creado no es la correcta');
       test.equal(result.endDate, mockReq.body.endDate, 'La fecha fin del viaje creado no es la correcta');
+      test.done();
+    }
+  }, nextMock);
+};
+
+exports.testEliminarViaje = function(test) {
+  mockReq.travel = info.travel;
+  routes.remove(mockReq, {
+    json: function(result) {
+      test.ok(!result, 'El viaje no fue eliminado correctamente');
+      test.done();
+    }
+  }, nextMock);
+};
+
+exports.testUsuarioConUnViajeCreado = function(test) {
+  routes.all(mockReq, {
+    json: function(result) {
+      test.equal(result.length, 1, 'El usuario debe tener un viaje creado');
       test.done();
     }
   }, nextMock);

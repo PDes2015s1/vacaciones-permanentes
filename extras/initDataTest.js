@@ -24,10 +24,24 @@ module.exports = function insert(callback) {
       if (err) {
         return next(err);
       }
-      mockReq.payload._id = user._id;
-      callback(mockReq, mockRes, nextMockParam, {
-        idUser: user._id
+      var travel = new Travel({
+        title: 'America',
+        startDate: new Date(2015, 6, 1),
+        endDate: new Date(2015, 6, 15)
       });
+      travel.user = user._id;
+      travel.save(function(err, travel) {
+        if (err) {
+          return next(err);
+        }
+
+        mockReq.payload._id = user._id;
+        callback(mockReq, mockRes, nextMockParam, {
+          user: user,
+          travel: travel
+        });
+      });
+
     });
   });
 }
