@@ -1,19 +1,13 @@
 var express = require('express');
-var router = express.Router();
 var mongoose = require('mongoose');
 var Travel = mongoose.model('Travel');
 var Destination = mongoose.model('Destination');
 var PointOfInterest = mongoose.model('PointOfInterest');
 var User = mongoose.model('User');
-var passport = require('passport');
-var jwt = require('express-jwt');
 
-var auth = jwt({
-  secret: 'SECRET',
-  userProperty: 'payload'
-});
+module.exports = {};
 
-router.post('/travels/:travel/destinations', auth, checkPermission, function(req, res, next) {
+module.exports.create = function(req, res, next) {
   var destination = new Destination(req.body);
   destination.travel = req.travel;
   destination.user = req.payload._id;
@@ -31,9 +25,9 @@ router.post('/travels/:travel/destinations', auth, checkPermission, function(req
       res.json(destination);
     });
   });
-});
+};
 
-router.get('/destinations/:destination', auth, checkPermission, function(req, res, next) {
+module.exports.get = function(req, res, next) {
   req.destination.populate(['pointsOfInterest', 'lodging'], function(err, destination) {
     if (err) {
       return next(err);
@@ -41,9 +35,9 @@ router.get('/destinations/:destination', auth, checkPermission, function(req, re
 
     res.json(destination);
   });
-});
+};
 
-router.post('/destinations/:destination/pointsOfInterest', auth, checkPermission, function(req, res, next) {
+module.exports.createPoint = function(req, res, next) {
   var pointOfInterest = new PointOfInterest(req.body);
   pointOfInterest.destination = req.destination;
 
@@ -61,9 +55,9 @@ router.post('/destinations/:destination/pointsOfInterest', auth, checkPermission
       res.json(pointOfInterest);
     });
   });
-});
+};
 
-router.post('/destinations/:destination/lodging', auth, checkPermission, function(req, res, next) {
+module.exports.getLodging = function(req, res, next) {
   var pointOfInterest = new PointOfInterest(req.body);
 
   pointOfInterest.save(function(err, pointOfInterest) {
@@ -80,24 +74,18 @@ router.post('/destinations/:destination/lodging', auth, checkPermission, functio
       res.json(pointOfInterest);
     });
   });
-});
+};
 
-router.delete('/destinations/:destination/:pointOfInterest', auth, checkPermission, function(req, res, next) {
+module.exports.removePoint = function(req, res, next) {
   req.pointOfInterest.remove(function(err) {
     if (err) throw err;
     res.json();
   });
-});
+};
 
-router.delete('/travels/:travel/:destination/dest', auth, checkPermission, function(req, res, next) {
+module.exports.remove = function(req, res, next) {
   req.destination.remove(function(err) {
     if (err) throw err;
     res.json();
   });
-});
-
-router.param('travel', params(Travel, 'travel'));
-router.param('destination', params(Destination, 'destination'));
-router.param('pointOfInterest', params(PointOfInterest, 'pointOfInterest'));
-
-module.exports = router;
+};
