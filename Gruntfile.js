@@ -40,8 +40,8 @@ module.exports = function(grunt) {
 
   grunt.registerTask('runtests', function() {
     grunt.task.run('nodeunit');
-    grunt.task.run('jasmine');
-    grunt.task.run('jshint');
+    //grunt.task.run('jasmine');
+    //grunt.task.run('jshint');
   });
 
   grunt.loadNpmTasks('grunt-karma');
