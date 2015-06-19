@@ -1,4 +1,5 @@
 # vacaciones-permanentes
+[![Build Status](https://travis-ci.org/PDes2015s1/vacaciones-permanentes.svg?branch=travis)](https://travis-ci.org/PDes2015s1/vacaciones-permanentes)
 
 Integrantes: <br />
 José Di Meglio <br />
