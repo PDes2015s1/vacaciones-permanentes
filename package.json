@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "postinstall": "bower install",
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "grunt --verbose"
   },
   "dependencies": {
     "body-parser": "~1.12.0",
