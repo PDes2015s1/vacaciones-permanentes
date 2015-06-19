@@ -28,20 +28,14 @@ module.exports = function(grunt) {
 
     nodeunit: {
       all: ['tests/nodeunit/**/*Test.js'],
-      options: {
-        reporter: 'junit',
-        reporterOptions: {
-          output: 'outputdir'
-        }
-      }
     }
 
   });
 
   grunt.registerTask('runtests', function() {
-    //grunt.task.run('nodeunit');
+    grunt.task.run('nodeunit');
     grunt.task.run('jasmine');
-    //grunt.task.run('jshint');
+    grunt.task.run('jshint');
   });
 
   grunt.loadNpmTasks('grunt-karma');
