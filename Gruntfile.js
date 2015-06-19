@@ -38,7 +38,7 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('default', function() {
+  grunt.registerTask('runtests', function() {
     grunt.task.run('nodeunit');
     grunt.task.run('jasmine');
     grunt.task.run('jshint');
