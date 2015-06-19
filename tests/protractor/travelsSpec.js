@@ -9,23 +9,25 @@ describe('Travels', function() {
   });
 
   it('Deberia crear un travel', function() {
-    browser.get('http://localhost:3000/#/travels');
-    element(by.model('title')).sendKeys('Europa');
-    element(by.model('startDate')).sendKeys('2015-06-01');
-    element(by.model('endDate')).sendKeys('2015-06-31');
-
-    element(by.id('createbtn')).click();
+    utils.createTravel('Europa', '2015-06-01', '2015-06-30');
     travels = element.all(by.repeater('travel in travels'));
     expect(travels.count()).toEqual(1);
     expect(travels.first().getText()).toContain('Europa');
   });
-  
+
   it('No deberia crear un travel sin completar los campos', function() {
     browser.get('http://localhost:3000/#/travels');
 
     element(by.id('createbtn')).click();
     travels = element.all(by.repeater('travel in travels'));
     expect(travels.count()).toEqual(0);
+  });
+
+  it('Al ir a la pagina d eun travel deberia verse su detalle', function() {
+    utils.createTravel('Europa', '2015-06-01', '2015-06-30');
+    element.all(by.repeater('travel in travels')).get(0).
+    element(by.linkText('Detalle')).click();
+    expect(element(by.id('title-travel')).getText()).toEqual('Viaje Europa');
   });
 
 });

@@ -6,16 +6,12 @@ describe('Registro', function() {
   });
 
   it('Se deberia registrar correctamente', function() {
-    browser.get('http://localhost:3000/#/register');
-    element(by.model('user.username')).sendKeys('josetest');
-    element(by.model('user.password')).sendKeys('123456');
-
-    element(by.id('registerbtn')).click();
+    utils.userRegistration('josetest', '123456');
 
     expect(element(by.id('currentUser')).getText()).
     toEqual('josetest');
   });
-  
+
   it('No se deberia registrar sin completar los campos', function() {
     browser.get('http://localhost:3000/#/register');
 

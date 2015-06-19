@@ -1,5 +1,14 @@
 var mongoose = require('mongoose');
 
+function createTravel(title, startDate, endDate){
+  browser.get('http://localhost:3000/#/travels');
+  element(by.model('title')).sendKeys(title);
+  element(by.model('startDate')).sendKeys(startDate);
+  element(by.model('endDate')).sendKeys(endDate);
+
+  element(by.id('createbtn')).click();
+}
+
 function userRegistration(user, password) {
   browser.get('http://localhost:3000/#/register');
   element(by.model('user.username')).sendKeys(user);
@@ -41,5 +50,6 @@ module.exports = {
   userRegistration: userRegistration,
   login: login,
   clearDataBase: clearDataBase,
-  clearAll: clearAll
+  clearAll: clearAll,
+  createTravel: createTravel
 };

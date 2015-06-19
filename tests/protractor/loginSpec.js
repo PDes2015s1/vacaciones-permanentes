@@ -6,11 +6,7 @@ describe('Login', function() {
   });
 
   it('No se deberia loguearse si el usuario no existe', function() {
-    browser.get('http://localhost:3000/#/login');
-    element(by.model('user.username')).sendKeys('usuario');
-    element(by.model('user.password')).sendKeys('123456');
-
-    element(by.id('loginbtn')).click();
+    utils.login('usuario', '123456');
 
     expect(element(by.id('message')).getText()).
     toEqual('Incorrect username.');
@@ -18,11 +14,7 @@ describe('Login', function() {
 
   it('Deberia loguearse', function() {
     utils.userRegistration('josetest', '123456');
-    browser.get('http://localhost:3000/#/login');
-    element(by.model('user.username')).sendKeys('josetest');
-    element(by.model('user.password')).sendKeys('123456');
-
-    element(by.id('loginbtn')).click();
+    utils.login('josetest', '123456');
 
     expect(element(by.id('currentUser')).getText()).
     toEqual('josetest');
