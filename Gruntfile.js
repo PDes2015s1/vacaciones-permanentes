@@ -37,6 +37,12 @@ module.exports = function(grunt) {
     }
 
   });
+  
+  grunt.registerTask('default', function(){
+    grunt.task.run('nodeunit');
+	grunt.task.run('jasmine');
+	grunt.task.run('jshint');
+  });
 
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-wiredep');
@@ -44,5 +50,4 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
   grunt.registerTask('jasmine', ['karma']);
-  grunt.registerTask('default', 'jshint');
 };
