@@ -41,7 +41,8 @@
                   placeholder="Destino"
                   g-places-autocomplete
                   options="destinationOptions"
-                  ng-model="body"></input>
+                  ng-model="body"
+				  force-selection="true"></input>
             </div>
             <label>Fecha inicio</label>
             <div class="form-group">
@@ -55,7 +56,7 @@
                   class="form-control"
                   ng-model="body.end"></input>
             </div>
-            <button type="submit" class="btn btn-primary">Crear</button>
+            <button type="submit" id="createbtn" class="btn btn-primary">Crear</button>
             <a type="submit" href="/#/travels" class="btn btn-default">Volver</a>
          </form>
       </div>

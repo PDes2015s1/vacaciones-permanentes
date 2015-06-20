@@ -23,7 +23,7 @@ describe('Travels', function() {
     expect(travels.count()).toEqual(0);
   });
 
-  it('Al ir a la pagina d eun travel deberia verse su detalle', function() {
+  it('Al ir a la pagina de un travel deberia verse su detalle', function() {
     utils.createTravel('Europa', '2015-06-01', '2015-06-30');
     element.all(by.repeater('travel in travels')).get(0).
     element(by.linkText('Detalle')).click();
