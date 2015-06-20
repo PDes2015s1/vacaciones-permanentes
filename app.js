@@ -6,13 +6,19 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport');
+var router = express.Router();
+var jwt = require('express-jwt');
+
 require('./models/Users');
 require('./models/Travels');
 require('./models/PointsOfInterest');
 require('./models/Destinations');
 require('./config/passport');
 
-mongoose.connect('mongodb://localhost/travels');
+var User = mongoose.model('User');
+var Travel = mongoose.model('Travel');
+var Destination = mongoose.model('Destination');
+var PointOfInterest = mongoose.model('PointOfInterest');
 
 //Functions Globals
 
@@ -30,13 +36,13 @@ var setParam = function(req, res, next, id, model, field) {
     req[field] = value;
     return next();
   });
-}
+};
 
 global.params = function(model, field) {
   return function(req, res, next, id) {
     setParam(req, res, next, id, model, field);
   };
-}
+};
 
 global.checkPermission = function(req, res, next) {
   if ((req.travel && req.travel.user != req.payload._id) || (req.destination && req.destination.user != req.payload._id))
@@ -46,16 +52,50 @@ global.checkPermission = function(req, res, next) {
   else {
     return next();
   }
-}
+};
 
 //End Functions Globals
 
-var routes = require('./routes/index');
+var index = require('./routes/index');
 var travels = require('./routes/travels');
-var users = require('./routes/users');
 var destinations = require('./routes/destinations');
 
 var app = express();
+
+var auth = jwt({
+  secret: 'SECRET',
+  userProperty: 'payload'
+});
+
+//Router travels
+router.get('/travels', auth, travels.all);
+router.post('/travels', auth, travels.create);
+router.delete('/travels/:travel', auth, checkPermission, travels.remove);
+router.get('/travels/:travel', auth, checkPermission, travels.get);
+
+router.param('travel', params(Travel, 'travel'));
+//End router travels
+
+//Router destinations
+router.post('/travels/:travel/destinations', auth, checkPermission, destinations.create);
+router.get('/destinations/:destination', auth, checkPermission, destinations.get);
+router.post('/destinations/:destination/pointsOfInterest', auth, checkPermission, destinations.createPoint);
+router.post('/destinations/:destination/lodging', auth, checkPermission, destinations.createLodging);
+router.delete('/destinations/:destination/:pointOfInterest', auth, checkPermission, destinations.removePoint);
+router.delete('/travels/:travel/:destination/dest', auth, checkPermission, destinations.remove);
+
+router.param('travel', params(Travel, 'travel'));
+router.param('destination', params(Destination, 'destination'));
+router.param('pointOfInterest', params(PointOfInterest, 'pointOfInterest'));
+//End router destinations
+
+
+//Router index
+router.get('/', index.index);
+router.post('/register', index.register);
+router.post('/login', index.login);
+
+//End router index
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -73,10 +113,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/bower_components', express.static(__dirname + '/bower_components'));
 
-app.use('/', routes);
-app.use('/', travels);
-app.use('/', destinations);
-app.use('/users', users);
+app.use('/', router);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -92,11 +129,22 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
+    console.log(err);
     res.render('error', {
       message: err.message,
       error: err
     });
   });
+}
+
+if (app.get('env') === 'development') {
+  /* Connect to the DB */
+  mongoose.connect('mongodb://localhost/travelstest', function() {
+    /* Drop the DB */
+    mongoose.connection.db.dropDatabase();
+  });
+} else {
+  mongoose.connect('mongodb://localhost/travels');
 }
 
 // production error handler
@@ -116,14 +164,14 @@ var myRender = function(view) {
     res.render(view, {
       title: 'Vacacioner permanentes'
     });
-  }
-}
+  };
+};
 
-routes.get('/view/home', myRender('home'))
-routes.get('/view/travels/all', myRender('travels/all'))
-routes.get('/view/travels/detail', myRender('travels/detail'))
-routes.get('/view/login', myRender('users/login'))
-routes.get('/view/register', myRender('users/register'))
-routes.get('/view/destinations/detail', myRender('destinations/detail'))
+router.get('/view/home', myRender('home'));
+router.get('/view/travels/all', myRender('travels/all'));
+router.get('/view/travels/detail', myRender('travels/detail'));
+router.get('/view/login', myRender('users/login'));
+router.get('/view/register', myRender('users/register'));
+router.get('/view/destinations/detail', myRender('destinations/detail'));
 
 module.exports = app;

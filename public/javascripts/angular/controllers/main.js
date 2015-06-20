@@ -5,11 +5,10 @@ app.controller('MainCtrl', [
     $scope.reverse = true;
     $scope.travels = travels.travels;
     $scope.isLoggedIn = auth.isLoggedIn;
-    $scope.travelToRemove;
 
     $scope.setTravelToRemove = function(travel) {
       $scope.travelToRemove = travel;
-    }
+    };
 
     $scope.addTravel = function() {
       if ($scope.isInvalidTravel()) {
@@ -29,11 +28,11 @@ app.controller('MainCtrl', [
         if (!$scope[arguments[i]] || $scope[arguments[i]] === '') return true;
       }
       return false;
-    }
+    };
 
     $scope.isInvalidTravel = function() {
       return noValueIn('title', 'startDate', 'endDate') || $scope.startDate > $scope.endDate;
-    }
+    };
 
     $scope.removeTravel = function() {
       travels.remove($scope.travelToRemove);

@@ -44,11 +44,11 @@ app.controller('destinationCtrl', [
         $scope.destination.pointsOfInterest.push(pointOfInterest);
         $scope.pointOfInterest = null;
       });
-    }
+    };
 
     $scope.setPointToRemove = function(point) {
       $scope.pointToRemove = point;
-    }
+    };
 
     $scope.removePoint = function() {
       destinations.removePoint(destination, $scope.pointToRemove).success(function(data) {
@@ -63,11 +63,12 @@ app.controller('destinationCtrl', [
         bounds.extend(latlng);
         $scope.map.googleMap.getGMap().fitBounds(bounds);
       }
-    }
+    };
 
     $scope.showPointOfInterest = function(point) {
       $scope.pointOfInterestToShow = point;
-    }
+    };
+
     $scope.addLodging = function() {
       if (!$scope.lodging || !$scope.lodging.name) return;
 
@@ -90,13 +91,14 @@ app.controller('destinationCtrl', [
         bounds.extend(latlng);
         $scope.map.googleMap.getGMap().fitBounds(bounds);
       });
-    }
+    };
+
     $scope.removeLodging = function() {
       destinations.removePoint(destination, $scope.destination.lodging).success(function(data) {
         $scope.destination.lodging = null;
         $scope.lodging = null;
       });
-    }
+    };
 
     function isLodging() {
       return $scope.lodging.types.indexOf("lodging") != -1;

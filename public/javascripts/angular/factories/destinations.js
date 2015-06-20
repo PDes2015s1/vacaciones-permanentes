@@ -4,7 +4,7 @@ app.factory('destinations', ['$http', 'auth', function($http, auth) {
       headers: {
         Authorization: 'Bearer ' + auth.getToken()
       }
-    }
+    };
   };
   var o = {
     get: function(id) {
@@ -22,6 +22,6 @@ app.factory('destinations', ['$http', 'auth', function($http, auth) {
     addLodging: function(idDestintation, lodging) {
       return $http.post('/destinations/' + idDestintation + '/lodging', lodging, headers());
     }
-  }
+  };
   return o;
 }]);

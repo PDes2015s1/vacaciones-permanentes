@@ -7,7 +7,7 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
 
   auth.getToken = function() {
     return $window.localStorage['flapper-news-token'];
-  }
+  };
 
   auth.isLoggedIn = function() {
     var token = auth.getToken();
@@ -47,4 +47,4 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
   };
 
   return auth;
-}])
+}]);

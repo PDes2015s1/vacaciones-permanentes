@@ -6,7 +6,6 @@ app.controller('TravelCtrl', [
   function($scope, travels, travel, auth) {
     $scope.travel = travel;
     $scope.isLoggedIn = auth.isLoggedIn;
-    $scope.destinationToRemove;
     $scope.map = {
       center: {
         latitude: 0,
@@ -28,7 +27,7 @@ app.controller('TravelCtrl', [
           right: 'prev,next'
         }
       }
-    }
+    };
 
     $scope.pol = {
       id: 1,
@@ -80,7 +79,7 @@ app.controller('TravelCtrl', [
 
     $scope.setDestinationToRemove = function(destination) {
       $scope.destinationToRemove = destination;
-    }
+    };
 
     $scope.removeDestination = function() {
       travels.removeDestination(travel, $scope.destinationToRemove).success(function(data) {
