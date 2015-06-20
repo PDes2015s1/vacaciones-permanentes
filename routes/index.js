@@ -29,6 +29,11 @@ module.exports.register = function(req, res, next) {
   user.setPassword(req.body.password);
 
   user.save(function(err) {
+    if (isDuplicateError(err)) {
+      return res.status(400).json({
+        message: 'The user is already registered'
+      });
+    }
     if (err) {
       return next(err);
     }
@@ -38,6 +43,10 @@ module.exports.register = function(req, res, next) {
     });
   });
 };
+
+function isDuplicateError(err) {
+  return err && err.code == 11000;
+}
 
 module.exports.login = function(req, res, next) {
   if (!req.body.username || !req.body.password) {

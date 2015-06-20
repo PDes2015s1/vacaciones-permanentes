@@ -36,6 +36,7 @@ function clearDataBase() {
 }
 
 function clearLocalStorage() {
+  browser.get('http://localhost:3000/#/login');
   browser.executeScript('window.sessionStorage.clear();');
   browser.executeScript('window.localStorage.clear();');
 }
