@@ -137,7 +137,7 @@ if (app.get('env') === 'development') {
   });
 }
 
-var mongodb_base_url = mongodb://localhost/;
+var mongodb_base_url = 'mongodb://localhost/';
 
 if(process.env.OPENSHIFT_MONGODB_DB_URL){
   mongodb_base_url = process.env.OPENSHIFT_MONGODB_DB_URL;
