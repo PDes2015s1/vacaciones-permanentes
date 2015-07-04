@@ -8,6 +8,9 @@ deploy:
   provider: openshift
   user: "jgdimeglio@gmail.com"
   password: "test1234" # can be encrypted
+  domain:
+    master: http://vacacionespermanentesmaster-pdesg2.rhcloud.com/
+    dev: http://vacacionespermanentesdev-pdesg2.rhcloud.com/
   app:
     master: vacacionespermanentesmaster
     dev: vacacionespermanentesdev
