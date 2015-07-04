@@ -8,9 +8,13 @@ deploy:
   provider: openshift
   user: "jgdimeglio@gmail.com"
   password: "test1234" # can be encrypted
-  domain:
-    master: pdesg2
-    dev: pdesg2
+  domain: pdesg2
   app:
     master: vacacionespermanentesmaster
     dev: vacacionespermanentesdev
+  on:
+    all_branches: true
+  branches:
+    only:
+      - master
+      - dev
