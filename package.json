@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "postinstall": "export HOME=/var/lib/openshift/[instance-id]/app-root/runtime/repo; ./node_modules/bower/bin/bower install",
+    "postinstall": "bower install",
     "start": "node ./bin/www",
     "test": "grunt --verbose"
   },
