@@ -12,5 +12,4 @@ deploy:
   app:
     master: vacacionespermanentesmaster
     dev: vacacionespermanentesdev
-  on:
-    all_branches: true
+  deployment_branch: dev
