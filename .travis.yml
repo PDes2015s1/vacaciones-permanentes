@@ -14,7 +14,3 @@ deploy:
     dev: vacacionespermanentesdev
   on:
     all_branches: true
-  branches:
-    only:
-      - master
-      - dev
