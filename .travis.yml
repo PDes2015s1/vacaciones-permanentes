@@ -9,8 +9,8 @@ deploy:
   user: "jgdimeglio@gmail.com"
   password: "test1234" # can be encrypted
   domain:
-    master: vacacionespermanentesmaster-pdesg2.rhcloud.com
-    dev: vacacionespermanentesdev-pdesg2.rhcloud.com
+    master: pdesg2
+    dev: pdesg2
   app:
     master: vacacionespermanentesmaster
     dev: vacacionespermanentesdev
