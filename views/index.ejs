@@ -19,7 +19,15 @@
     <script src='../bower_components/fullcalendar/dist/fullcalendar.js'></script>
     <script src='../bower_components/angular-ui-calendar/src/calendar.js'></script>
     <!-- endbower-->
-    <script src="/javascripts/angularApp.js"></script>
+    <script src="/javascripts/angular/app.js"></script>
+	<script src="/javascripts/angular/factories/auth.js"></script>
+	<script src="/javascripts/angular/factories/destinations.js"></script>
+	<script src="/javascripts/angular/factories/travels.js"></script>
+	<script src="/javascripts/angular/controllers/auth.js"></script>
+	<script src="/javascripts/angular/controllers/destination.js"></script>
+	<script src="/javascripts/angular/controllers/main.js"></script>
+	<script src="/javascripts/angular/controllers/nav.js"></script>
+	<script src="/javascripts/angular/controllers/travel.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
     <script src="../bower_components/angular-google-places-autocomplete/src/autocomplete.js"></script>
     <style> .glyphicon-thumbs-up { cursor:pointer } </style>
@@ -36,7 +44,7 @@
             <li class="active"><a href="#/home">Home</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right" ng-controller="NavCtrl">
-            <li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
+            <li ng-show="isLoggedIn()" id="currentUser"><a>{{ currentUser() }}</a></li>
             <li ng-show="isLoggedIn()"><a href="" ng-click="logOut()">Log Out</a></li>
             <li ng-hide="isLoggedIn()"><a href="/#/login">Log In</a></li>
             <li ng-hide="isLoggedIn()"><a href="/#/register">Registrar</a></li>
