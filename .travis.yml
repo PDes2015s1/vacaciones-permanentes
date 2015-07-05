@@ -4,3 +4,12 @@ node_js:
 services:
   - mongodb
 script: "npm -g install grunt-cli && grunt runtests"
+deploy:
+  provider: openshift
+  user: "jgdimeglio@gmail.com"
+  password: "test1234" # can be encrypted
+  domain: pdesg2
+  app:
+    master: vacacionespermanentesmaster
+    dev: vacacionespermanentesdev
+  deployment_branch: dev
