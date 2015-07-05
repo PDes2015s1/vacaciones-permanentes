@@ -9,7 +9,4 @@ deploy:
   user: "jgdimeglio@gmail.com"
   password: "test1234" # can be encrypted
   domain: pdesg2
-  app:
-    master: vacacionespermanentesmaster
-    dev: vacacionespermanentesdev
   deployment_branch: dev
